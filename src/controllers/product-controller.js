@@ -1,6 +1,7 @@
 const { Product, SubCategory, Enums } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 const getOffset = require("../utils/getOffset")
+const loadFile = require("../utils/loadFile")
 
 class ProductController {
 
@@ -45,8 +46,6 @@ class ProductController {
     }
     async getProductById(req, res) {
 
-       
-
         const { product_id, sub_category_id, category_id, extend } = req.query
         const { id } = req.params
 
@@ -84,80 +83,64 @@ class ProductController {
 
     }
 
+    async createProduct(req, res) {
 
-    // async createFilm(req, res) {
-    //     const {
-    //         name,
-    //         year,
-    //         descr,
-    //         status,
-    //         price,
-    //         image_url,
-    //         rent_start_dt,
-    //         rent_end_dt,
-    //         session_times,
-    //     } = req.body
+        const file = loadFile(req)
 
-    //     try {
+        const data = req.body
 
-    //         const newFilm = await Film.create({
-    //             name,
-    //             year,
-    //             descr,
-    //             status,
-    //             price,
-    //             image_url,
-    //             rent_start_dt,
-    //             rent_end_dt,
-    //             session_times,
-    //         })
+        try {
+            const newProduct = await Product.create({
+                ...data,
+                image_url:data.photo
+            })
 
-    //         return res.json({ message: "Фильм был успешно добавлен", data: newFilm })
-    //     } catch (error) {
-    //         console.log(error);
-    //         return res.status(400).json({ message: "Что то пошло не так" })
-    //     }
-    // }
+            file?.load()
+            return res.json({ message: "Новый продукт был успешно добавлен", data: newProduct })
+        } catch (error) {
+            return res.status(400).json({ message: "Что то пошло не так" })
+        }
+    }
 
-    // async updateFilm(req, res) {
-    //     const {
-    //         name,
-    //         year,
-    //         descr,
-    //         status,
-    //         price,
-    //         image_url,
-    //         rent_start_dt,
-    //         rent_end_dt,
-    //         session_times,
-    //     } = req.body
+    async updateFilm(req, res) {
+        const {
+            name,
+            year,
+            descr,
+            status,
+            price,
+            image_url,
+            rent_start_dt,
+            rent_end_dt,
+            session_times,
+        } = req.body
 
-    //     const { id } = req.params
+        const { id } = req.params
 
-    //     try {
+        try {
 
-    //         const udpatedFilm = await Film.update({
-    //             name,
-    //             year,
-    //             descr,
-    //             status,
-    //             price,
-    //             image_url,
-    //             rent_start_dt,
-    //             rent_end_dt,
-    //             session_times,
-    //         }, {
-    //             where: {
-    //                 rent_film_id: id
-    //             },
-    //             returning: true
-    //         })
+            const udpatedFilm = await Film.update({
+                name,
+                year,
+                descr,
+                status,
+                price,
+                image_url,
+                rent_start_dt,
+                rent_end_dt,
+                session_times,
+            }, {
+                where: {
+                    rent_film_id: id
+                },
+                returning: true
+            })
 
-    //         return res.json({ message: "Фильм был успешно обновлён", data: udpatedFilm[1][0].dataValues })
-    //     } catch (error) {
-    //         return res.status(400).json({ message: "Что то пошло не так" })
-    //     }
-    // }
+            return res.json({ message: "Фильм был успешно обновлён", data: udpatedFilm[1][0].dataValues })
+        } catch (error) {
+            return res.status(400).json({ message: "Что то пошло не так" })
+        }
+    }
 }
 
 module.exports = new ProductController()

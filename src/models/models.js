@@ -8,7 +8,7 @@ const Category = db.define("category", {
 
 const SubCategory = db.define("sub_category", {
     sub_category_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    category_id: { type: DataTypes.INTEGER },
+    category_id: { type: DataTypes.INTEGER, allowNull: false },
     name: { type: DataTypes.STRING },
 })
 
@@ -18,11 +18,11 @@ SubCategory.belongsTo(Category, { foreignKey: "category_id" })
 const Product = db.define("product", {
     product_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
-    is_active: { type: DataTypes.STRING },
+    is_active: { type: DataTypes.BOOLEAN },
     descr: { type: DataTypes.STRING },
     price: { type: DataTypes.FLOAT, defaultValue: 0 },
     image_url: { type: DataTypes.STRING },
-    sub_category_id: { type: DataTypes.INTEGER },
+    sub_category_id: { type: DataTypes.INTEGER, allowNull: false },
 })
 
 SubCategory.hasMany(Product, { foreignKey: "sub_category_id" })
@@ -42,14 +42,13 @@ const Order = db.define("order", {
     order_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     user_id: { type: DataTypes.INTEGER },
     status_id: { type: DataTypes.INTEGER, defaultValue: 0 },
-    status_id: { type: DataTypes.INTEGER, defaultValue: 0 },
 }, {
     timestamps: true
 })
 const OrderProduct = db.define("order_product", {
     order_product_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    order_id: { type: DataTypes.INTEGER },
-    product_id: { type: DataTypes.INTEGER },
+    order_id: { type: DataTypes.INTEGER, allowNull: false },
+    product_id: { type: DataTypes.INTEGER, allowNull: false },
 })
 
 User.hasMany(Order, { foreignKey: "user_id" })
@@ -63,7 +62,7 @@ const ProductPhoto = db.define("product_photo", {
     product_photo_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
     url: { type: DataTypes.STRING },
-    product_id: { type: DataTypes.INTEGER },
+    product_id: { type: DataTypes.INTEGER, allowNull: false },
 })
 
 Product.hasMany(ProductPhoto, { foreignKey: "product_id" })

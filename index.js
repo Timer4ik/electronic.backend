@@ -2,14 +2,20 @@ require("dotenv").config()
 const express = require("express")
 const cors = require("cors")
 const db = require("./db.js")
+const path = require("path")
+const fileUpload = require("express-fileupload")
+const uuid = require("uuid")
+
+const { Category, SubCategory, Product, ProductPhoto, User } = require("./src/models/models.js")
 
 const router = require("./src/routes/index")
-const { Category, SubCategory, Product, ProductPhoto, User } = require("./src/models/models.js")
 const app = express()
 const PORT = process.env.PORT || 5001
 
 app.use(express.json())
 app.use(cors())
+app.use(fileUpload({}))
+app.use(express.static(path.resolve(__dirname, "src/static")))
 
 app.use("/api", router)
 
