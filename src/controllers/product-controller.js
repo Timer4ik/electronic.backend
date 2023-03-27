@@ -45,11 +45,13 @@ class ProductController {
     }
     async getProductById(req, res) {
 
-        const include = []
-        const where = {}
+       
 
         const { product_id, sub_category_id, category_id, extend } = req.query
         const { id } = req.params
+
+        const include = getFullInclude(extend)
+        const where = {}
 
         where.product_id = id
 
@@ -66,11 +68,6 @@ class ProductController {
                     category_id
                 }
             })
-        }
-        if (extend) {
-            include.push(...extend.split(",").map(ex => ({
-                model: Enums[ex],
-            })))
         }
 
         try {

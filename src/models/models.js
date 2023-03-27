@@ -1,7 +1,6 @@
 const db = require("../../db.js")
 const { DataTypes } = require("sequelize")
 
-
 const Category = db.define("category", {
     category_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
@@ -60,6 +59,15 @@ Order.hasMany(OrderProduct, { foreignKey: "order_id" })
 OrderProduct.belongsTo(Order, { foreignKey: "order_id" })
 
 
+const ProductPhoto = db.define("product_photo", {
+    product_photo_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING },
+    url: { type: DataTypes.STRING },
+    product_id: { type: DataTypes.INTEGER },
+})
+
+Product.hasMany(ProductPhoto, { foreignKey: "product_id" })
+ProductPhoto.belongsTo(Product, { foreignKey: "product_id" })
 
 const Enums = {
     "category": Category,
@@ -74,9 +82,9 @@ const Enums = {
     "order_products": OrderProduct,
     "product": Product,
     "products": Product,
+    "product_photo": ProductPhoto,
+    "product_photos": ProductPhoto
 }
-
-
 
 module.exports = {
     Enums,
@@ -85,7 +93,8 @@ module.exports = {
     OrderProduct,
     Category,
     Product,
-    SubCategory
+    SubCategory,
+    ProductPhoto
 }
 
 

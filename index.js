@@ -4,7 +4,7 @@ const cors = require("cors")
 const db = require("./db.js")
 
 const router = require("./src/routes/index")
-const { Category, SubCategory, Product } = require("./src/models/models.js")
+const { Category, SubCategory, Product, ProductPhoto } = require("./src/models/models.js")
 const app = express()
 const PORT = process.env.PORT || 5001
 
@@ -18,36 +18,75 @@ const start = async () => {
     await db.authenticate()
     await db.sync()
 
-    // Product.create({
-    //     descr:"test2",
-    //     image_url:"test2",
-    //     is_active:true,
-    //     name:"test2",
-    //     price:3000,
-    //     sub_category_id:3
+
+    // Category.create({
+    //     name: "пк"
     // })
     // Category.create({
-    //     name:"пк"
+    //     name: "ноутбуки"
     // })
     // Category.create({
-    //     name:"ноутбуки"
-    // })
-    // Category.create({
-    //     name:"телефоны"
+    //     name: "телефоны"
     // })
 
     // SubCategory.create({
-    //     category_id:1,
-    //     name:"сборки",
+    //     category_id: 1,
+    //     name: "сборки",
     // })
     // SubCategory.create({
-    //     category_id:1,
-    //     name:"игровые"
+    //     category_id: 1,
+    //     name: "игровые"
     // })
     // SubCategory.create({
-    //     category_id:1,
-    //     name:"офисные"
+    //     category_id: 1,
+    //     name: "офисные"
     // })
+
+    // Product.create({
+    //     descr: "test2",
+    //     image_url: "test2",
+    //     is_active: true,
+    //     name: "test2",
+    //     price: 3000,
+    //     sub_category_id: 3
+    // })
+    //   Product.create({
+    //     descr: "test",
+    //     image_url: "test",
+    //     is_active: true,
+    //     name: "test",
+    //     price: 1000,
+    //     sub_category_id: 1
+    // })
+    //   Product.create({
+    //     descr: "test3",
+    //     image_url: "test3",
+    //     is_active: true,
+    //     name: "test",
+    //     price: 6000,
+    //     sub_category_id: 1
+    // })
+    // ProductPhoto.create({
+    //     name: "phoot",
+    //     product_id: 1,
+    //     url: "http://sewr.api/png"
+    // })
+    // ProductPhoto.create({
+    //     name: "phoot2",
+    //     product_id: 1,
+    //     url: "http://sewr.api/png"
+    // })
+    // ProductPhoto.create({
+    //     name: "phoot3",
+    //     product_id: 1,
+    //     url: "http://sewr.api/png"
+    // })
+    // ProductPhoto.create({
+    //     name: "phoot3",
+    //     product_id: 2,
+    //     url: "http://sewr.api/png"
+    // })
+
 
     await app.listen(PORT, () => {
         console.log(`Server has been started on port http://localhost:${PORT}`);
