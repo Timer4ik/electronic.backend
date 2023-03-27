@@ -1,18 +1,33 @@
 const db = require("../../db.js")
 const { DataTypes } = require("sequelize")
 
-const Film = db.define("film", {
-    rent_film_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+
+const Category = db.define("category", {
+    category_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
-    year: { type: DataTypes.STRING },
+})
+
+const SubCategory = db.define("sub_category", {
+    sub_category_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    category_id: { type: DataTypes.INTEGER },
+    name: { type: DataTypes.STRING },
+})
+
+Category.hasMany(SubCategory, { foreignKey: "category_id" })
+SubCategory.belongsTo(Category, { foreignKey: "category_id" })
+
+const Product = db.define("product", {
+    product_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING },
+    is_active: { type: DataTypes.STRING },
     descr: { type: DataTypes.STRING },
-    status: { type: DataTypes.INTEGER, defaultValue: 0 },
     price: { type: DataTypes.FLOAT, defaultValue: 0 },
     image_url: { type: DataTypes.STRING },
-    rent_start_dt: { type: DataTypes.DATEONLY },
-    rent_end_dt: { type: DataTypes.DATEONLY },
-    session_times: { type: DataTypes.STRING }
+    sub_category_id: { type: DataTypes.INTEGER },
 })
+
+SubCategory.hasMany(Product, { foreignKey: "sub_category_id" })
+Product.belongsTo(SubCategory, { foreignKey: "sub_category_id" })
 
 const User = db.define("user", {
     user_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -20,32 +35,57 @@ const User = db.define("user", {
     email: { type: DataTypes.STRING(100), allowNull: false, unique: true },
     password: { type: DataTypes.STRING(100), allowNull: false },
     role: { type: DataTypes.STRING(20), defaultValue: "user" }
+}, {
+    timestamps: true
 })
 
-const Seat = db.define("seat", {
-    seat_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    number: { type: DataTypes.INTEGER, allowNull: false },
-    status: { type: DataTypes.INTEGER, defaultValue: 0 },
-    row: { type: DataTypes.INTEGER },
-    col: { type: DataTypes.INTEGER },
-})
-
-const UserRentSeat = db.define("user_film", {
-    user_rent_seat_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+const Order = db.define("order", {
+    order_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     user_id: { type: DataTypes.INTEGER },
-    rent_film_id: { type: DataTypes.INTEGER },
-    seat_id: { type: DataTypes.INTEGER }
+    status_id: { type: DataTypes.INTEGER, defaultValue: 0 },
+    status_id: { type: DataTypes.INTEGER, defaultValue: 0 },
+}, {
+    timestamps: true
+})
+const OrderProduct = db.define("order_product", {
+    order_product_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    order_id: { type: DataTypes.INTEGER },
+    product_id: { type: DataTypes.INTEGER },
 })
 
-Film.hasMany(UserRentSeat, { foreignKey: "rent_film_id" })
+User.hasMany(Order, { foreignKey: "user_id" })
+Order.belongsTo(User, { foreignKey: "user_id" })
 
-UserRentSeat.belongsTo(Film, { foreignKey: "rent_film_id" })
+Order.hasMany(OrderProduct, { foreignKey: "order_id" })
+OrderProduct.belongsTo(Order, { foreignKey: "order_id" })
+
+
+
+const Enums = {
+    "category": Category,
+    "categories": Category,
+    "sub_category": SubCategory,
+    "sub_categories": SubCategory,
+    "user": User,
+    "users": User,
+    "order": Order,
+    "orders": Order,
+    "order_product": OrderProduct,
+    "order_products": OrderProduct,
+    "product": Product,
+    "products": Product,
+}
+
+
 
 module.exports = {
+    Enums,
     User,
-    Seat,
-    UserRentSeat,
-    Film
+    Order,
+    OrderProduct,
+    Category,
+    Product,
+    SubCategory
 }
 
 

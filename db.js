@@ -1,7 +1,7 @@
 const { Sequelize } = require("sequelize")
 
 const db = new Sequelize({
-    database:"cinema",
+    database:"electronic",
     dialect:"postgres",
     host:"localhost",
     port:"5432",
