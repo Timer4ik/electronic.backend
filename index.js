@@ -4,7 +4,7 @@ const cors = require("cors")
 const db = require("./db.js")
 
 const router = require("./src/routes/index")
-const { Category, SubCategory, Product, ProductPhoto } = require("./src/models/models.js")
+const { Category, SubCategory, Product, ProductPhoto, User } = require("./src/models/models.js")
 const app = express()
 const PORT = process.env.PORT || 5001
 
@@ -85,6 +85,13 @@ const start = async () => {
     //     name: "phoot3",
     //     product_id: 2,
     //     url: "http://sewr.api/png"
+    // })
+
+    // User.create({
+    //     email:"admin",
+    //     name:"admin",
+    //     password:"admin",
+    //     role:"admin",
     // })
 
 
