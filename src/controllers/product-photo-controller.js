@@ -10,7 +10,7 @@ class ProductPhotoController {
 
         try {
             const include = getFullInclude(extend)
-            const where = {}
+            const where = data?.filter ?? {}
 
             const photos = await ProductPhoto.findAll({
                 where,
@@ -32,7 +32,7 @@ class ProductPhotoController {
 
         try {
             const include = getFullInclude(extend)
-            const where = {}
+            const where = data?.filter ?? {}
 
             where.product_id = id
 

@@ -65,6 +65,17 @@ const ProductPhoto = db.define("product_photo", {
     product_id: { type: DataTypes.INTEGER, allowNull: false },
 })
 
+const Slider = db.define("slider", {
+    slider_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    title: { type: DataTypes.STRING },
+    text: { type: DataTypes.STRING, },
+    photo_url: { type: DataTypes.STRING },
+    product_id: { type: DataTypes.INTEGER, allowNull: true },
+})
+
+Product.hasOne(Slider, { foreignKey: "product_id" })
+Slider.belongsTo(Product, { foreignKey: "product_id" })
+
 Product.hasMany(ProductPhoto, { foreignKey: "product_id" })
 ProductPhoto.belongsTo(Product, { foreignKey: "product_id" })
 
@@ -82,7 +93,9 @@ const Enums = {
     "product": Product,
     "products": Product,
     "product_photo": ProductPhoto,
-    "product_photos": ProductPhoto
+    "product_photos": ProductPhoto,
+    "sliders": Slider,
+    "slider": Slider
 }
 
 module.exports = {
@@ -93,7 +106,8 @@ module.exports = {
     Category,
     Product,
     SubCategory,
-    ProductPhoto
+    ProductPhoto,
+    Slider
 }
 
 

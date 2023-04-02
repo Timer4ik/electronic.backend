@@ -11,10 +11,10 @@ class ProductController {
 
         const offset = getOffset(page, limit)
 
-        const { product_id, sub_category_id, category_id, extend } = req.query
+        const { product_id, sub_category_id, category_id, extend, query } = req.query
 
         const include = getFullInclude(extend)
-        const where = {}
+        const where = query?.filter ?? {}
 
         if (product_id) {
             where.product_id = product_id
@@ -50,7 +50,7 @@ class ProductController {
         const { id } = req.params
 
         const include = getFullInclude(extend)
-        const where = {}
+        const where = data?.filter ?? {}
 
         where.product_id = id
 
@@ -92,7 +92,7 @@ class ProductController {
         try {
             const newProduct = await Product.create({
                 ...data,
-                image_url:data.photo
+                image_url: data.photo
             })
 
             file?.load()
@@ -102,17 +102,20 @@ class ProductController {
         }
     }
 
-    async updateFilm(req, res) {
+    async updateProduct(req, res) {
+
+        const file = loadFile(req)
+
         const {
             name,
             year,
             descr,
             status,
             price,
-            image_url,
             rent_start_dt,
             rent_end_dt,
             session_times,
+            ...data
         } = req.body
 
         const { id } = req.params
@@ -129,13 +132,14 @@ class ProductController {
                 rent_start_dt,
                 rent_end_dt,
                 session_times,
+                image_url: data.photo
             }, {
                 where: {
                     rent_film_id: id
                 },
                 returning: true
             })
-
+            file?.load()
             return res.json({ message: "Фильм был успешно обновлён", data: udpatedFilm[1][0].dataValues })
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })

@@ -8,7 +8,7 @@ class SubCategoryController {
 
         try {
             const include = getFullInclude(extend)
-            const where = {}
+            const where = data?.filter ?? {}
 
             if (sub_category_id) {
                 where.sub_category_id = sub_category_id
