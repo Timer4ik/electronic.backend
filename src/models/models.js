@@ -38,22 +38,25 @@ const Property = db.define("property", {
     property_type_id: { type: DataTypes.INTEGER, allowNull: false },
 })
 
-PropertyType.hasMany(Property,{foreignKey:"property_type_id"})
-Property.belongsTo(PropertyType,{foreignKey:"property_type_id"})
-
-const ProductProperty = db.define("product", {
+const ProductProperty = db.define("product_property", {
     product_property_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
-    property_value: { type: DataTypes.BOOLEAN },
-    product_id:{type:DataTypes.INTEGER},
-    property_id: { type: DataTypes.INTEGER }
+    value: { type: DataTypes.BOOLEAN },
+    value_min: { type: DataTypes.FLOAT },
+    value_average: { type: DataTypes.FLOAT },
+    value_max: { type: DataTypes.FLOAT },
+    product_id: { type: DataTypes.INTEGER, allowNull: false },
+    property_id: { type: DataTypes.INTEGER, allowNull: false }
 })
 
-Property.hasMany(ProductProperty,{foreignKey:"property_id"})
-ProductProperty.belongsTo(Property,{foreignKey:"property_id"})
+PropertyType.hasMany(Property, { foreignKey: "property_type_id" })
+Property.belongsTo(PropertyType, { foreignKey: "property_type_id" })
 
-Product.hasMany(ProductProperty,{foreignKey:"product_id"})
-ProductProperty.belongsTo(Product,{foreignKey:"product_id"})
+Property.hasMany(ProductProperty, { foreignKey: "property_id" })
+ProductProperty.belongsTo(Property, { foreignKey: "property_id" })
+
+Product.hasMany(ProductProperty, { foreignKey: "product_id" })
+ProductProperty.belongsTo(Product, { foreignKey: "product_id" })
 
 SubCategory.hasMany(Product, { foreignKey: "sub_category_id" })
 Product.belongsTo(SubCategory, { foreignKey: "sub_category_id" })
@@ -129,6 +132,19 @@ PromoProduct.belongsTo(Promo, { foreignKey: "promo_id" })
 Product.hasOne(PromoProduct, { foreignKey: "product_id" })
 PromoProduct.belongsTo(Product, { foreignKey: "product_id" })
 
+const ProductReview = db.define("product_review", {
+    user_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
+    product_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
+    comment: { type: DataTypes.STRING },
+    stars: { type: DataTypes.FLOAT, defaultValue: 0 }
+})
+
+Product.hasMany(ProductReview, { foreignKey: "product_id" })
+ProductReview.belongsTo(Product, { foreignKey: "product_id" })
+
+User.hasMany(ProductReview, { foreignKey: "user_id" })
+ProductReview.belongsTo(User, { foreignKey: "user_id" })
+
 const Enums = {
     "category": Category,
     "categories": Category,
@@ -151,6 +167,18 @@ const Enums = {
     "promo_products": PromoProduct,
     "promo_product": PromoProduct,
 
+    "property_type":PropertyType,
+    "property_types":PropertyType,
+
+    "property":Property,
+    "properties":Property,
+
+    "product_property":ProductProperty,
+    "product_properties":ProductProperty,
+    
+    "product_review":ProductReview,
+    "product_reviews":ProductReview,
+
 }
 
 module.exports = {
@@ -163,7 +191,11 @@ module.exports = {
     SubCategory,
     ProductPhoto,
     Slider, Promo,
-    PromoProduct
+    PromoProduct,
+    PropertyType,
+    Property,
+    ProductProperty,
+    ProductReview,
 }
 
 
