@@ -1,13 +1,13 @@
-const CategoryController = require("../controllers/category-controller")
+const PromoController = require("../controllers/promo-controller")
 
 const Router = require("express").Router
 
 const router = Router()
 
-router.get("/categories", CategoryController.getCategories)
-router.get("/categories/:id", CategoryController.getCategoryById)
-router.post("/categories", CategoryController.createCategory)
-router.put("/categories/:id", CategoryController.updateCategory)
-router.delete("/categories/:id", CategoryController.getCategoryById)
+router.get("/promo", PromoController.getPromos)
+router.get("/promo/:id", PromoController.getPromoById)
+router.post("/promo", PromoController.createPromo)
+router.put("/promo/:id", PromoController.updatePromo)
+router.delete("/promo/:id", PromoController.deletePromo)
 
 module.exports = router

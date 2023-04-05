@@ -1,25 +1,23 @@
-const { Category } = require("../models/models")
-const getFullInclude = require("../utils/getFullInclude")
+const getFullInclude = require("../utils/getFullInclude");
 
-class CategoryController {
+class BaseController {
 
-    async getCategoryById(req, res) {
+    static Model = null
+
+    static async getById(req, res) {
 
         const { id } = req.params
         const { extend } = req.query
 
         try {
+            console.log(this.Model);
             const include = getFullInclude(extend)
-
-            const categories = await Category.findOne({
-                where: {
-                    category_id:id
-                },
+            const item = await this.Model.findByPk(id, {
                 include
             })
 
             return res.json({
-                message: "Категория была успешно получена", data: categories
+                message: "Элемент был успешно получен", data: item
             })
 
         } catch (error) {
@@ -27,25 +25,21 @@ class CategoryController {
         }
     }
 
-    async getCategories(req, res) {
+    static async get(req, res) {
 
-        const { category_id, extend } = req.query
+        const { extend } = req.query
+        console.log(this);
 
         try {
             const include = getFullInclude(extend)
             const where = data?.filter ?? {}
-
-            if (category_id) {
-                where.category_id = category_id
-            }
-
-            const categories = await Category.findAll({
+            const items = await this.Model.findAll({
                 where,
                 include
             })
 
             return res.json({
-                message: "Категории успешно получены", data: categories
+                message: "Данные успешно получены", data: items
             })
 
         } catch (error) {
@@ -53,13 +47,13 @@ class CategoryController {
         }
     }
 
-    async createCategory(req, res) {
+    async post(req, res) {
 
         const data = req.body
 
         try {
 
-            const newCategory = await Category.create({
+            const newCategory = await Model.create({
                 ...data
             })
 
@@ -70,7 +64,7 @@ class CategoryController {
         }
     }
 
-    async updateCategory(req, res) {
+    async put(req, res) {
 
         const {
             ...data
@@ -80,11 +74,11 @@ class CategoryController {
 
         try {
 
-            const updatedCategory = await Category.update({
+            const updatedCategory = await Model.update({
                 ...data
             }, {
                 where: {
-                    category_id: id
+                    category: id
                 },
                 returning: true
             })
@@ -97,4 +91,4 @@ class CategoryController {
 
 }
 
-module.exports = new CategoryController()
+module.exports = BaseController

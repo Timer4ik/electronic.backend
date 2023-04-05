@@ -6,7 +6,7 @@ const loadFile = require("../utils/loadFile")
 class SliderController {
     async getSliders(req, res) {
 
-        const { slider_id, product_id, extend, page = 0, limit = 20,...data } = req.query
+        const { slider_id, product_id, extend, page = 0, limit = 20, ...data } = req.query
         const offset = getOffset(page, limit)
 
         try {
@@ -22,6 +22,29 @@ class SliderController {
 
             return res.json({
                 message: "Слайдеры успешно получены", data: sliders
+            })
+
+        } catch (error) {
+            return res.status(400).json({ message: "Что то пошло не так" })
+        }
+    }
+    async getSliderById(req, res) {
+
+        const { id } = req.params
+        const { extend } = req.query
+
+        try {
+            const include = getFullInclude(extend)
+
+            const categories = await Slider.findOne({
+                where: {
+                    slider_id: id
+                },
+                include
+            })
+
+            return res.json({
+                message: "Слайдер был успешно получен", data: categories
             })
 
         } catch (error) {

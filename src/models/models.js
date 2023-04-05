@@ -25,6 +25,36 @@ const Product = db.define("product", {
     sub_category_id: { type: DataTypes.INTEGER, allowNull: false },
 })
 
+// Типы характеристик
+const PropertyType = db.define("property_type", {
+    property_type_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    type_name: { type: DataTypes.STRING },
+    unit_type: { type: DataTypes.STRING }
+})
+
+const Property = db.define("property", {
+    property_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING },
+    property_type_id: { type: DataTypes.INTEGER, allowNull: false },
+})
+
+PropertyType.hasMany(Property,{foreignKey:"property_type_id"})
+Property.belongsTo(PropertyType,{foreignKey:"property_type_id"})
+
+const ProductProperty = db.define("product", {
+    product_property_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING },
+    property_value: { type: DataTypes.BOOLEAN },
+    product_id:{type:DataTypes.INTEGER},
+    property_id: { type: DataTypes.INTEGER }
+})
+
+Property.hasMany(ProductProperty,{foreignKey:"property_id"})
+ProductProperty.belongsTo(Property,{foreignKey:"property_id"})
+
+Product.hasMany(ProductProperty,{foreignKey:"product_id"})
+ProductProperty.belongsTo(Product,{foreignKey:"product_id"})
+
 SubCategory.hasMany(Product, { foreignKey: "sub_category_id" })
 Product.belongsTo(SubCategory, { foreignKey: "sub_category_id" })
 
@@ -71,6 +101,9 @@ const Slider = db.define("slider", {
     text: { type: DataTypes.STRING, },
     photo_url: { type: DataTypes.STRING },
     product_id: { type: DataTypes.INTEGER, allowNull: true },
+    is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
+    start_active_dt: { type: DataTypes.DATE, allowNull: true },
+    end_active_dt: { type: DataTypes.DATE, allowNull: true }
 })
 
 Product.hasOne(Slider, { foreignKey: "product_id" })
@@ -78,6 +111,23 @@ Slider.belongsTo(Product, { foreignKey: "product_id" })
 
 Product.hasMany(ProductPhoto, { foreignKey: "product_id" })
 ProductPhoto.belongsTo(Product, { foreignKey: "product_id" })
+
+const Promo = db.define("promo", {
+    promo_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    title: { type: DataTypes.STRING },
+    text: { type: DataTypes.TEXT }
+})
+
+const PromoProduct = db.define("promo_product", {
+    promo_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
+    product_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
+})
+
+Promo.hasMany(PromoProduct, { foreignKey: "promo_id" })
+PromoProduct.belongsTo(Promo, { foreignKey: "promo_id" })
+
+Product.hasOne(PromoProduct, { foreignKey: "product_id" })
+PromoProduct.belongsTo(Product, { foreignKey: "product_id" })
 
 const Enums = {
     "category": Category,
@@ -95,7 +145,12 @@ const Enums = {
     "product_photo": ProductPhoto,
     "product_photos": ProductPhoto,
     "sliders": Slider,
-    "slider": Slider
+    "slider": Slider,
+    "promos": Promo,
+    "promo": Promo,
+    "promo_products": PromoProduct,
+    "promo_product": PromoProduct,
+
 }
 
 module.exports = {
@@ -107,7 +162,8 @@ module.exports = {
     Product,
     SubCategory,
     ProductPhoto,
-    Slider
+    Slider, Promo,
+    PromoProduct
 }
 
 

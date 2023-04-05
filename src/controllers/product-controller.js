@@ -11,7 +11,7 @@ class ProductController {
 
         const offset = getOffset(page, limit)
 
-        const { product_id, sub_category_id, category_id, extend, query } = req.query
+        const { product_id, sub_category_id, category_id, extend, ...query } = req.query
 
         const include = getFullInclude(extend)
         const where = query?.filter ?? {}

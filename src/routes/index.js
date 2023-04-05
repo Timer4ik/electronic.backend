@@ -5,6 +5,7 @@ const subCategoryRouter = require("./subcategory-router.js")
 const productRouter = require("./product-router.js")
 const productPhotoRouter = require("./product-photo-router.js")
 const sliderRouter = require("./slider-router.js")
+const promoRouter = require("./promo-router.js")
 const router = Router()
 
 router.use("/auth", authRouter)
@@ -13,5 +14,6 @@ router.use(subCategoryRouter)
 router.use(productRouter)
 router.use(productPhotoRouter)
 router.use(sliderRouter)
+router.use(promoRouter)
 
 module.exports = router
