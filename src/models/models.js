@@ -1,6 +1,12 @@
 const db = require("../../db.js")
 const { DataTypes } = require("sequelize")
 
+const Company = db.define("company", {
+    company_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING },
+    photo: { type: DataTypes.STRING }
+})
+
 const Category = db.define("category", {
     category_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
@@ -23,7 +29,12 @@ const Product = db.define("product", {
     price: { type: DataTypes.FLOAT, defaultValue: 0 },
     image_url: { type: DataTypes.STRING },
     sub_category_id: { type: DataTypes.INTEGER, allowNull: false },
+    company_id: { type: DataTypes.INTEGER, allowNull: false },
+    available: { type: DataTypes.INTEGER, defaultValue: 0 }
 })
+
+Company.hasMany(Product, { foreignKey: "company_id" })
+Product.belongsTo(Company, { foreignKey: "company_id" })
 
 // Типы характеристик
 const PropertyType = db.define("property_type", {
@@ -167,17 +178,20 @@ const Enums = {
     "promo_products": PromoProduct,
     "promo_product": PromoProduct,
 
-    "property_type":PropertyType,
-    "property_types":PropertyType,
+    "property_type": PropertyType,
+    "property_types": PropertyType,
 
-    "property":Property,
-    "properties":Property,
+    "property": Property,
+    "properties": Property,
 
-    "product_property":ProductProperty,
-    "product_properties":ProductProperty,
-    
-    "product_review":ProductReview,
-    "product_reviews":ProductReview,
+    "product_property": ProductProperty,
+    "product_properties": ProductProperty,
+
+    "product_review": ProductReview,
+    "product_reviews": ProductReview,
+
+    "company": Company,
+    "companies": Company
 
 }
 
@@ -196,6 +210,7 @@ module.exports = {
     Property,
     ProductProperty,
     ProductReview,
+    Company
 }
 
 

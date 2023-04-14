@@ -1,24 +1,25 @@
-const { Category } = require("../models/models")
+const { Company } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 
-class CategoryController {
+class CompanyController {
 
-    async getCategoryById(req, res) {
+    async getCompanyById(req, res) {
+
         const { id } = req.params
         const { extend } = req.query
 
         try {
             const include = getFullInclude(extend)
 
-            const categories = await Category.findOne({
+            const companies = await Company.findOne({
                 where: {
-                    category_id: id
+                    Company_id: id
                 },
                 include
             })
 
             return res.json({
-                message: "Категория была успешно получена", data: categories
+                message: "Компания была успешно получена", data: companies
             })
 
         } catch (error) {
@@ -26,24 +27,21 @@ class CategoryController {
         }
     }
 
-    async getCategories(req, res) {
-        const { category_id, extend } = req.query
+    async getCompanies(req, res) {
+
+        const { extend } = req.query
 
         try {
             const include = getFullInclude(extend)
             const where = data?.filter ?? {}
 
-            if (category_id) {
-                where.category_id = category_id
-            }
-
-            const categories = await Category.findAll({
+            const companies = await Company.findAll({
                 where,
                 include
             })
 
             return res.json({
-                message: "Категории успешно получены", data: categories
+                message: "Компании успешно получены", data: companies
             })
 
         } catch (error) {
@@ -51,23 +49,25 @@ class CategoryController {
         }
     }
 
-    async createCategory(req, res) {
+    async createCompany(req, res) {
+
         const data = req.body
 
         try {
 
-            const newCategory = await Category.create({
+            const newCompany = await Company.create({
                 ...data
             })
 
-            return res.json({ message: "Новая категория была успешно добавлена", data: newCategory })
+            return res.json({ message: "Новая компания была успешно добавлена", data: newCompany })
 
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
         }
     }
 
-    async updateCategory(req, res) {
+    async updateCompany(req, res) {
+
         const {
             ...data
         } = req.body
@@ -76,31 +76,32 @@ class CategoryController {
 
         try {
 
-            const updatedCategory = await Category.update({
+            const updatedCompany = await Company.update({
                 ...data
             }, {
                 where: {
-                    category_id: id
+                    company_id: id
                 },
                 returning: true
             })
-            return res.json({ message: "Категория была успешно обновлена", data: updatedCategory[1][0].dataValues })
+            return res.json({ message: "Компания была успешно обновлена", data: updatedCompany[1][0].dataValues })
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
         }
+
     }
 
-    async deleteCategory(req, res) {
+    async deleteCompany(req, res) {
         const { id } = req.params
 
         try {
 
-            const deletedCategory = await Category.destroy({
+            const deletedCompany = await Company.destroy({
                 where: {
-                    category_id: id
+                    company_id: id
                 },
             })
-            return res.json({ message: "Категория была успешно удалена", data: deletedCategory })
+            return res.json({ message: "Компания была успешно удалена", data: deletedCompany })
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
         }
@@ -108,4 +109,4 @@ class CategoryController {
 
 }
 
-module.exports = new CategoryController()
+module.exports = new CompanyController()
