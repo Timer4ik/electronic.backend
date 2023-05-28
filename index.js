@@ -6,7 +6,7 @@ const path = require("path")
 const fileUpload = require("express-fileupload")
 const uuid = require("uuid")
 
-const { Category, SubCategory, Product, ProductPhoto, User } = require("./src/models/models.js")
+const { Category, Product, ProductPhoto, User } = require("./src/models/models.js")
 
 const router = require("./src/routes/index")
 const app = express()
@@ -26,13 +26,17 @@ const start = async () => {
 
 
     // Category.create({
-    //     name: "пк"
+    //     name: "Комплектующие",
+    //     parent_id:1
     // })
     // Category.create({
-    //     name: "ноутбуки"
+    //     name: "Моноблоки",
+    //     parent_id:1
     // })
+
     // Category.create({
-    //     name: "телефоны"
+    //     name: "Игровые пк",
+    //     parent_id:1
     // })
 
     // SubCategory.create({
@@ -54,7 +58,7 @@ const start = async () => {
     //     is_active: true,
     //     name: "test2",
     //     price: 3000,
-    //     sub_category_id: 3
+    //     category_id: 3
     // })
     //   Product.create({
     //     descr: "test",
@@ -62,7 +66,7 @@ const start = async () => {
     //     is_active: true,
     //     name: "test",
     //     price: 1000,
-    //     sub_category_id: 1
+    //     category_id: 1
     // })
     //   Product.create({
     //     descr: "test3",
@@ -70,7 +74,7 @@ const start = async () => {
     //     is_active: true,
     //     name: "test",
     //     price: 6000,
-    //     sub_category_id: 1
+    //     category_id: 1
     // })
     // ProductPhoto.create({
     //     name: "phoot",

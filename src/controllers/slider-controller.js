@@ -6,12 +6,12 @@ const loadFile = require("../utils/loadFile")
 class SliderController {
     async getSliders(req, res) {
 
-        const { slider_id, product_id, extend, page = 0, limit = 20, ...data } = req.query
+        const { slider_id, product_id, extend, page = 0, limit = 20, ...query } = req.query
         const offset = getOffset(page, limit)
 
         try {
             const include = getFullInclude(extend)
-            const where = data?.filter ?? {}
+            const where = query?.filter ?? {}
 
             const sliders = await Slider.findAll({
                 where,

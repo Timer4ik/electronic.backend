@@ -28,7 +28,6 @@ class BaseController {
     static async get(req, res) {
 
         const { extend } = req.query
-        console.log(this);
 
         try {
             const include = getFullInclude(extend)

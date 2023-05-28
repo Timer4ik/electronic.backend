@@ -1,9 +1,9 @@
-const { Category } = require("../models/models")
+const { Developer } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 
-class CategoryController {
+class DeveloperController {
 
-    async getCategoryById(req, res) {
+    async getDeveloperById(req, res) {
 
         const { id } = req.params
         const { extend } = req.query
@@ -12,7 +12,7 @@ class CategoryController {
         try {
             const include = getFullInclude(extend)
 
-            const categories = await Category.findOne({
+            const developers = await Developer.findOne({
                 where: {
                     category_id:id
                 },
@@ -20,7 +20,7 @@ class CategoryController {
             })
 
             return res.json({
-                message: "Категория была успешно получена", data: categories
+                message: "Производитель был успешно получен", data: developers
             })
 
         } catch (error) {
@@ -28,9 +28,9 @@ class CategoryController {
         }
     }
 
-    async getCategories(req, res) {
+    async getDevelopers(req, res) {
 
-        const { category_id, extend } = req.query
+        const { developer_id, extend } = req.query
 
         const query = req.query
 
@@ -38,17 +38,17 @@ class CategoryController {
             const include = getFullInclude(extend)
             const where = query?.filter ?? {}
 
-            if (category_id) {
-                where.category_id = category_id
+            if (developer_id) {
+                where.developer_id = developer_id
             }
 
-            const categories = await Category.findAll({
+            const developers = await Developer.findAll({
                 where,
                 include
             })
 
             return res.json({
-                message: "Категории успешно получены", data: categories
+                message: "Производители успешно получены", data: developers
             })
 
         } catch (error) {
@@ -56,24 +56,24 @@ class CategoryController {
         }
     }
 
-    async createCategory(req, res) {
+    async createDeveloper(req, res) {
 
         const data = req.body
 
         try {
 
-            const newCategory = await Category.create({
+            const newDeveloper = await Developer.create({
                 ...data
             })
 
-            return res.json({ message: "Новая категория была успешно добавлена", data: newCategory })
+            return res.json({ message: "Новый производитель был успешно добавлен", data: newDeveloper })
 
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
         }
     }
 
-    async updateCategory(req, res) {
+    async updateDeveloper(req, res) {
 
         const {
             ...data
@@ -83,15 +83,15 @@ class CategoryController {
 
         try {
 
-            const updatedCategory = await Category.update({
+            const updatedDeveloper = await Developer.update({
                 ...data
             }, {
                 where: {
-                    category_id: id
+                    developer_id: id
                 },
                 returning: true
             })
-            return res.json({ message: "Категория была успешно обновлена", data: updatedCategory[1][0].dataValues })
+            return res.json({ message: "Производитель был успешно обновлен", data: updatedDeveloper[1][0].dataValues })
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
         }
@@ -100,4 +100,4 @@ class CategoryController {
 
 }
 
-module.exports = new CategoryController()
+module.exports = new DeveloperController()

@@ -4,16 +4,10 @@ const { DataTypes } = require("sequelize")
 const Category = db.define("category", {
     category_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
+    photo: { type: DataTypes.STRING },
+    parent_id: { type: DataTypes.STRING },
+    is_end: { type: DataTypes.BOOLEAN, defaultValue: false }
 })
-
-const SubCategory = db.define("sub_category", {
-    sub_category_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    category_id: { type: DataTypes.INTEGER, allowNull: false },
-    name: { type: DataTypes.STRING },
-})
-
-Category.hasMany(SubCategory, { foreignKey: "category_id" })
-SubCategory.belongsTo(Category, { foreignKey: "category_id" })
 
 const Product = db.define("product", {
     product_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -22,7 +16,8 @@ const Product = db.define("product", {
     descr: { type: DataTypes.STRING },
     price: { type: DataTypes.FLOAT, defaultValue: 0 },
     image_url: { type: DataTypes.STRING },
-    sub_category_id: { type: DataTypes.INTEGER, allowNull: false },
+    category_id: { type: DataTypes.INTEGER, allowNull: false },
+    developer_id: { type: DataTypes.INTEGER, allowNull: false }
 })
 
 // Типы характеристик
@@ -58,8 +53,8 @@ ProductProperty.belongsTo(Property, { foreignKey: "property_id" })
 Product.hasMany(ProductProperty, { foreignKey: "product_id" })
 ProductProperty.belongsTo(Product, { foreignKey: "product_id" })
 
-SubCategory.hasMany(Product, { foreignKey: "sub_category_id" })
-Product.belongsTo(SubCategory, { foreignKey: "sub_category_id" })
+Category.hasMany(Product, { foreignKey: "category_id" })
+Product.belongsTo(Category, { foreignKey: "category_id" })
 
 const User = db.define("user", {
     user_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -145,11 +140,18 @@ ProductReview.belongsTo(Product, { foreignKey: "product_id" })
 User.hasMany(ProductReview, { foreignKey: "user_id" })
 ProductReview.belongsTo(User, { foreignKey: "user_id" })
 
+const Developer = db.define("developer", {
+    developer_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
+    name: { type: DataTypes.STRING },
+    photo: { type: DataTypes.STRING },
+})
+
+Developer.hasMany(Product, { foreignKey: "developer_id" })
+Product.belongsTo(Developer, { foreignKey: "developer_id" })
+
 const Enums = {
     "category": Category,
     "categories": Category,
-    "sub_category": SubCategory,
-    "sub_categories": SubCategory,
     "user": User,
     "users": User,
     "order": Order,
@@ -167,17 +169,20 @@ const Enums = {
     "promo_products": PromoProduct,
     "promo_product": PromoProduct,
 
-    "property_type":PropertyType,
-    "property_types":PropertyType,
+    "property_type": PropertyType,
+    "property_types": PropertyType,
 
-    "property":Property,
-    "properties":Property,
+    "property": Property,
+    "properties": Property,
 
-    "product_property":ProductProperty,
-    "product_properties":ProductProperty,
-    
-    "product_review":ProductReview,
-    "product_reviews":ProductReview,
+    "product_property": ProductProperty,
+    "product_properties": ProductProperty,
+
+    "product_review": ProductReview,
+    "product_reviews": ProductReview,
+
+    "developers":Developer,
+    "developer":Developer
 
 }
 
@@ -188,7 +193,8 @@ module.exports = {
     OrderProduct,
     Category,
     Product,
-    SubCategory,
+    Developer,
+    // SubCategory,
     ProductPhoto,
     Slider, Promo,
     PromoProduct,

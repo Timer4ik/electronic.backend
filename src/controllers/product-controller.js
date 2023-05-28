@@ -1,4 +1,4 @@
-const { Product, SubCategory, Enums } = require("../models/models")
+const { Product, Category, Enums } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 const getOffset = require("../utils/getOffset")
 const loadFile = require("../utils/loadFile")
@@ -11,7 +11,7 @@ class ProductController {
 
         const offset = getOffset(page, limit)
 
-        const { product_id, sub_category_id, category_id, extend, ...query } = req.query
+        const { product_id, category_id, extend, ...query } = req.query
 
         const include = getFullInclude(extend)
         const where = query?.filter ?? {}
@@ -19,12 +19,12 @@ class ProductController {
         if (product_id) {
             where.product_id = product_id
         }
-        if (sub_category_id) {
-            where.sub_category_id = sub_category_id
-        }
+        // if (sub_category_id) {
+        //     where.sub_category_id = sub_category_id
+        // }
         if (category_id) {
             include.push({
-                model: SubCategory,
+                model: Category,
                 where: {
                     category_id
                 }
@@ -46,7 +46,7 @@ class ProductController {
     }
     async getProductById(req, res) {
 
-        const { product_id, sub_category_id, category_id, extend } = req.query
+        const { product_id, category_id, extend } = req.query
         const { id } = req.params
 
         const include = getFullInclude(extend)
@@ -57,12 +57,12 @@ class ProductController {
         if (product_id) {
             where.product_id = product_id
         }
-        if (sub_category_id) {
-            where.sub_category_id = sub_category_id
-        }
+        // if (sub_category_id) {
+        //     where.sub_category_id = sub_category_id
+        // }
         if (category_id) {
             include.push({
-                model: SubCategory,
+                model: Category,
                 where: {
                     category_id
                 }

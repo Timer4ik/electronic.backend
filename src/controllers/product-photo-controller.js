@@ -6,11 +6,11 @@ const getFullInclude = require("../utils/getFullInclude")
 class ProductPhotoController {
     async getProductPhotos(req, res) {
 
-        const { extend } = req.query
+        const { extend,...query } = req.query
 
         try {
             const include = getFullInclude(extend)
-            const where = data?.filter ?? {}
+            const where = query?.filter ?? {}
 
             const photos = await ProductPhoto.findAll({
                 where,
@@ -28,11 +28,11 @@ class ProductPhotoController {
     async getProductPhotosByProjectId(req, res) {
 
         const { id } = req.params
-        const { extend } = req.query
+        const { extend,...query } = req.query
 
         try {
             const include = getFullInclude(extend)
-            const where = data?.filter ?? {}
+            const where = query?.filter ?? {}
 
             where.product_id = id
 
