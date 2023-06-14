@@ -92,13 +92,13 @@ class ProductController {
         try {
             const newProduct = await Product.create({
                 ...data,
-                image_url: data.photo
+                image_url: data?.photo
             })
 
             file?.load()
             return res.json({ message: "Новый продукт был успешно добавлен", data: newProduct })
         } catch (error) {
-            return res.status(400).json({ message: "Что то пошло не так" })
+            return res.status(400).json({ message: "Что то пошло не так",error })
         }
     }
 

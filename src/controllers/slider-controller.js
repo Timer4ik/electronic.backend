@@ -56,12 +56,12 @@ class SliderController {
 
         const file = loadFile(req)
 
-        const data = req.body
+        const {photo,...data} = req.body
 
         try {
             const newSlider = await Slider.create({
                 ...data,
-                photo_url: data.photo
+                photo_url: photo
             })
 
             file?.load()
@@ -79,6 +79,7 @@ class SliderController {
             title,
             text,
             product_id,
+            is_active,
             ...data
         } = req.body
 
@@ -90,6 +91,7 @@ class SliderController {
                 title,
                 text,
                 product_id,
+                is_active,
                 photo_url: data.photo
             }, {
                 where: {

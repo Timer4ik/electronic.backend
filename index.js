@@ -6,7 +6,7 @@ const path = require("path")
 const fileUpload = require("express-fileupload")
 const uuid = require("uuid")
 
-const { Category, Product, ProductPhoto, User } = require("./src/models/models.js")
+const { Category, Product, ProductPhoto, User, Developer } = require("./src/models/models.js")
 
 const router = require("./src/routes/index")
 const app = express()
@@ -24,6 +24,10 @@ const start = async () => {
     await db.authenticate()
     await db.sync()
 
+    // Developer.create({
+    //     developer_id:0,
+    //     name:"ЭЛЕКТРОНИК"
+    // })
 
     // Category.create({
     //     name: "Комплектующие",

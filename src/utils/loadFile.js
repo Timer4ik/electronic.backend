@@ -5,7 +5,6 @@ module.exports = function (req, config = { multiple: false }) {
    let photo = req?.files?.photo
 
    if (photo) {
-
       if (!config.multiple) {
          let photoName
          if (photo) {
@@ -13,7 +12,9 @@ module.exports = function (req, config = { multiple: false }) {
             photoName = uuid.v4() + "." + photo.name.split(".")[1]
             req.body.photo = photoName
          }
+         console.log(photo);
          return {
+            size:photo.size,
             load:() => photo.mv(path.resolve(__dirname, "../static", photoName)),
          }
       }

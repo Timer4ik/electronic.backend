@@ -4,8 +4,10 @@ const { DataTypes } = require("sequelize")
 const Category = db.define("category", {
     category_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
-    photo: { type: DataTypes.STRING },
-    parent_id: { type: DataTypes.STRING },
+    file_id: { type: DataTypes.INTEGER, allowNull: true },
+    parent_id: { type: DataTypes.INTEGER },
+    desc: { type: DataTypes.STRING, allowNull: true },
+    is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
     is_end: { type: DataTypes.BOOLEAN, defaultValue: false }
 })
 
@@ -141,7 +143,7 @@ User.hasMany(ProductReview, { foreignKey: "user_id" })
 ProductReview.belongsTo(User, { foreignKey: "user_id" })
 
 const Developer = db.define("developer", {
-    developer_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
+    developer_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
     photo: { type: DataTypes.STRING },
 })
@@ -149,11 +151,25 @@ const Developer = db.define("developer", {
 Developer.hasMany(Product, { foreignKey: "developer_id" })
 Product.belongsTo(Developer, { foreignKey: "developer_id" })
 
+const File = db.define("file", {
+    file_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
+    size: { type: DataTypes.INTEGER, defaultValue: 0 },
+    name: { type: DataTypes.STRING, allowNull: true },
+    link: { type: DataTypes.STRING },
+})
+
+File.hasMany(Category, { foreignKey: "file_id" })
+Category.belongsTo(File, { foreignKey: "file_id" })
+
 const Enums = {
     "category": Category,
     "categories": Category,
     "user": User,
     "users": User,
+    "photo": File,
+    "photos": File,
+    "file": File,
+    "files": File,
     "order": Order,
     "orders": Order,
     "order_product": OrderProduct,
@@ -181,8 +197,8 @@ const Enums = {
     "product_review": ProductReview,
     "product_reviews": ProductReview,
 
-    "developers":Developer,
-    "developer":Developer
+    "developers": Developer,
+    "developer": Developer
 
 }
 
@@ -191,6 +207,7 @@ module.exports = {
     User,
     Order,
     OrderProduct,
+    File,
     Category,
     Product,
     Developer,
