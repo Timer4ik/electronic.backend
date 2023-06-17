@@ -1,5 +1,5 @@
 const { Op } = require("sequelize")
-const { Product, Category, Enums } = require("../models/models")
+const { Product, Category, Enums, Property, ProductPropertyValue, CategoryProperty } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 const getOffset = require("../utils/getOffset")
 const loadFile = require("../utils/loadFile")
@@ -37,17 +37,17 @@ class ProductController {
             }
         }
         try {
-            const product = await Product.findAll({
+            const products = await Product.findAll({
                 where,
                 include: include,
                 limit,
                 offset
             })
 
-            return res.json({ message: "Продукты успешно получены", data: product })
+            return res.json({ message: "Продукты успешно получены", data: products })
 
         } catch (error) {
-            return res.status(400).json({ message: "Что то пошло не так" })
+            return res.status(400).json({ message: "Что то пошло не так" ,error})
         }
     }
     async getProductById(req, res) {
@@ -102,6 +102,8 @@ class ProductController {
             })
 
             file?.load()
+
+
             return res.json({ message: "Новый продукт был успешно добавлен", data: newProduct })
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так", error })
@@ -114,7 +116,7 @@ class ProductController {
 
         try {
 
-           await Product.destroy({
+            await Product.destroy({
                 where: {
                     product_id: id
                 }

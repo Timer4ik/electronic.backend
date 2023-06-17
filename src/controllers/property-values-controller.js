@@ -1,8 +1,8 @@
-const { PropertyType } = require("../models/models")
+const { PropertyValue } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 
-class PropertyTypeController {
-    async getPropertyTypeById(req, res) {
+class PropertyValueController {
+    async getPropertyValueById(req, res) {
 
         const { id } = req.params
         const { extend } = req.query
@@ -10,7 +10,7 @@ class PropertyTypeController {
         try {
             const include = getFullInclude(extend)
 
-            const propertyType = await PropertyType.findOne({
+            const propertyType = await PropertyValue.findOne({
                 where: {
                     property_type_id: id
                 },
@@ -26,7 +26,7 @@ class PropertyTypeController {
         }
     }
 
-    async getPropertyTypes(req, res) {
+    async getPropertyValues(req, res) {
 
         const { extend, like, page, limit, ...query } = req.query
 
@@ -40,16 +40,16 @@ class PropertyTypeController {
                 }
             }
 
-            const propertyTypes = await PropertyType.findAll({
+            const propertyValues = await PropertyValue.findAll({
                 where,
                 include,
                 limit,
                 offset: (limit * page) || 0,
             })
 
-            const count = await PropertyType.count()
+            const count = await PropertyValue.count()
             return res.json({
-                message: "Типы характеристик были успешно получены", data: propertyTypes, count
+                message: "Значения характеристики были успешно получены", data: propertyValues, count
             })
 
         } catch (error) {
@@ -57,7 +57,7 @@ class PropertyTypeController {
         }
     }
 
-    async createPropertyType(req, res) {
+    async createPropertyValue(req, res) {
 
         const data = req.body
 
@@ -65,7 +65,7 @@ class PropertyTypeController {
 
             console.log(data);
 
-            const newPropertyType = await PropertyType.create({
+            const newPropertyType = await PropertyValue.create({
                 ...data
             })
 
@@ -76,7 +76,7 @@ class PropertyTypeController {
         }
     }
 
-    async updatePropertyType(req, res) {
+    async updatePropertyValue(req, res) {
 
         const {
             ...data
@@ -86,7 +86,7 @@ class PropertyTypeController {
 
         try {
 
-            const propertyType = await PropertyType.update({
+            const propertyType = await PropertyValue.update({
                 ...data
             }, {
                 where: {
@@ -100,15 +100,15 @@ class PropertyTypeController {
         }
     }
 
-    async deletePropertyType(req, res) {
+    async deletePropertyValue(req, res) {
 
         const { id } = req.params
 
         try {
 
-            const deletedPropertyType = await PropertyType.destroy({
+            const deletedPropertyType = await PropertyValue.destroy({
                 where: {
-                    property_type_id: id
+                    property_value_id: id
                 },
             })
             return res.json({ message: "Тип характеристики был успешно удален", data: deletedPropertyType })
@@ -118,4 +118,4 @@ class PropertyTypeController {
     }
 }
 
-module.exports = new PropertyTypeController()
+module.exports = new PropertyValueController()

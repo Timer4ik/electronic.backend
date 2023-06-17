@@ -23,17 +23,16 @@ const Product = db.define("product", {
 })
 
 // Типы характеристик
-const PropertyType = db.define("property_type", {
-    property_type_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    type_name: { type: DataTypes.STRING },
-    unit_type: { type: DataTypes.STRING },
+const PropertyValue = db.define("property_value", {
+    property_value_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING },
+    property_id:{ type: DataTypes.INTEGER, allowNull: false },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
 const Property = db.define("property", {
     property_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
-    property_type_id: { type: DataTypes.INTEGER, allowNull: false },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
@@ -45,32 +44,32 @@ const CategoryProperty = db.define("category_property", {
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
-Property.hasMany(CategoryProperty, { foreignKey: "property_id" })
-CategoryProperty.belongsTo(Property, { foreignKey: "property_id" })
-
 Category.hasMany(CategoryProperty, { foreignKey: "category_id" })
 CategoryProperty.belongsTo(Category, { foreignKey: "category_id" })
 
-const ProductProperty = db.define("product_property", {
-    product_property_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    name: { type: DataTypes.STRING },
-    value: { type: DataTypes.BOOLEAN },
-    value_min: { type: DataTypes.FLOAT },
-    value_average: { type: DataTypes.FLOAT },
-    value_max: { type: DataTypes.FLOAT },
+Property.hasMany(CategoryProperty, { foreignKey: "property_id" })
+CategoryProperty.belongsTo(Property, { foreignKey: "property_id" })
+
+
+const ProductPropertyValue = db.define("product_property_value", {
+    product_property_value_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     product_id: { type: DataTypes.INTEGER, allowNull: false },
-    property_id: { type: DataTypes.INTEGER, allowNull: false },
+    property_value_id: { type: DataTypes.INTEGER, allowNull: true },
+    property_id:{ type: DataTypes.INTEGER, allowNull: true },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
-PropertyType.hasMany(Property, { foreignKey: "property_type_id" })
-Property.belongsTo(PropertyType, { foreignKey: "property_type_id" })
+Property.hasMany(PropertyValue, { foreignKey: "property_id" })
+PropertyValue.belongsTo(PropertyValue, { foreignKey: "property_id" })
 
-Property.hasMany(ProductProperty, { foreignKey: "property_id" })
-ProductProperty.belongsTo(Property, { foreignKey: "property_id" })
+Property.hasMany(ProductPropertyValue, { foreignKey: "property_id" })
+ProductPropertyValue.belongsTo(Property, { foreignKey: "property_id" })
 
-Product.hasMany(ProductProperty, { foreignKey: "product_id" })
-ProductProperty.belongsTo(Product, { foreignKey: "product_id" })
+PropertyValue.hasMany(ProductPropertyValue, { foreignKey: "property_value_id" })
+ProductPropertyValue.belongsTo(PropertyValue, { foreignKey: "property_value_id" })
+
+Product.hasMany(ProductPropertyValue, { foreignKey: "product_id" })
+ProductPropertyValue.belongsTo(Product, { foreignKey: "product_id" })
 
 Category.hasMany(Product, { foreignKey: "category_id" })
 Product.belongsTo(Category, { foreignKey: "category_id" })
@@ -216,14 +215,14 @@ const Enums = {
     "promo_products": PromoProduct,
     "promo_product": PromoProduct,
 
-    "property_type": PropertyType,
-    "property_types": PropertyType,
+    "property_value": PropertyValue,
+    "property_values": PropertyValue,
 
     "property": Property,
     "properties": Property,
 
-    "product_property": ProductProperty,
-    "product_properties": ProductProperty,
+    "product_property_value": ProductPropertyValue,
+    "product_properties": ProductPropertyValue,
 
     "product_review": ProductReview,
     "product_reviews": ProductReview,
@@ -247,9 +246,9 @@ module.exports = {
     ProductPhoto,
     Slider, Promo,
     PromoProduct,
-    PropertyType,
+    PropertyValue,
     Property,
-    ProductProperty,
+    ProductPropertyValue,
     ProductReview,
 }
 
