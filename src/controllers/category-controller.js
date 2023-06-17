@@ -52,7 +52,7 @@ class CategoryController {
 
             const categories = await Category.findAll({
                 where,
-                limit: limit || 10,
+                limit,
                 offset: (limit * page) || 0,
                 order: [['category_id', 'ASC']],
                 include,

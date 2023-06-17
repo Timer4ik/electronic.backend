@@ -28,7 +28,7 @@ class PropertyTypeController {
 
     async getPropertyTypes(req, res) {
 
-        const { extend,like, ...query } = req.query
+        const { extend, like, page, limit, ...query } = req.query
 
         try {
             const include = getFullInclude(extend)
@@ -42,12 +42,14 @@ class PropertyTypeController {
 
             const propertyTypes = await PropertyType.findAll({
                 where,
-                include
+                include,
+                limit,
+                offset: (limit * page) || 0,
             })
 
             const count = await PropertyType.count()
             return res.json({
-                message: "Типы характеристик были успешно получены", data: propertyTypes,count
+                message: "Типы характеристик были успешно получены", data: propertyTypes, count
             })
 
         } catch (error) {
@@ -60,7 +62,7 @@ class PropertyTypeController {
         const data = req.body
 
         try {
-                               
+
             console.log(data);
 
             const newPropertyType = await PropertyType.create({

@@ -6,6 +6,7 @@ const router = Router()
 
 router.get("/product-photos/:id", ProductPhotoController.getProductPhotosByProjectId)
 router.get("/product-photos", ProductPhotoController.getProductPhotos)
-router.post("/product-photos/:id", ProductPhotoController.loadPhoto)
+router.post("/product-photos", ProductPhotoController.loadPhoto)
+router.delete("/product-photos/:id", ProductPhotoController.deleteProductPhotoById)
 
 module.exports = router

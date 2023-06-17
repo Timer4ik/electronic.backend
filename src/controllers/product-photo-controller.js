@@ -54,26 +54,40 @@ class ProductPhotoController {
 
         // const file = loadFile(req, { multiple: true })
 
-        const { id } = req.params
-        const { files } = req.body
+        const data = req.body
 
         try {
-            if (!product_id) {
-                throw new Error("Ошибка")
-            }
 
-            let productPhotos = await ProductPhoto.bulkCreate(files.map((file) => ({
-                file_id:file,
-                product_id: id
-            })))
+            let productPhotos = await ProductPhoto.create(data)
 
-            // file?.load()
 
             return res.json({
                 message: "Фотографии были успешно добавлены",
                 data: productPhotos
             })
 
+
+        } catch (error) {
+            return res.status(400).json({ message: "Что то пошло не так" })
+        }
+
+    }
+
+    async deleteProductPhotoById(req, res) {
+
+        const { id } = req.params
+
+        try {
+
+            await ProductPhoto.destroy({
+                where: {
+                    product_photo_id: id
+                }
+            })
+
+            return res.json({
+                message: "Фото было успешно удалено",
+            })
 
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
