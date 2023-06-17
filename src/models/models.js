@@ -14,10 +14,10 @@ const Category = db.define("category", {
 const Product = db.define("product", {
     product_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
-    is_active: { type: DataTypes.BOOLEAN },
+    is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
     descr: { type: DataTypes.STRING },
     price: { type: DataTypes.FLOAT, defaultValue: 0 },
-    image_url: { type: DataTypes.STRING },
+    file_id: { type: DataTypes.INTEGER, allowNull: true },
     category_id: { type: DataTypes.INTEGER, allowNull: false },
     developer_id: { type: DataTypes.INTEGER, allowNull: false }
 })
@@ -26,14 +26,30 @@ const Product = db.define("product", {
 const PropertyType = db.define("property_type", {
     property_type_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     type_name: { type: DataTypes.STRING },
-    unit_type: { type: DataTypes.STRING }
+    unit_type: { type: DataTypes.STRING },
+    is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
 const Property = db.define("property", {
     property_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
     property_type_id: { type: DataTypes.INTEGER, allowNull: false },
+    is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
+
+const CategoryProperty = db.define("category_property", {
+    category_property_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    property_id: { type: DataTypes.INTEGER, allowNull: false },
+    category_id: { type: DataTypes.INTEGER, allowNull: false },
+    name: { type: DataTypes.STRING, allowNull: false },
+    is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
+})
+
+Property.hasMany(CategoryProperty, { foreignKey: "property_id" })
+CategoryProperty.belongsTo(Property, { foreignKey: "property_id" })
+
+Category.hasMany(CategoryProperty, { foreignKey: "category_id" })
+CategoryProperty.belongsTo(Category, { foreignKey: "category_id" })
 
 const ProductProperty = db.define("product_property", {
     product_property_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -43,7 +59,8 @@ const ProductProperty = db.define("product_property", {
     value_average: { type: DataTypes.FLOAT },
     value_max: { type: DataTypes.FLOAT },
     product_id: { type: DataTypes.INTEGER, allowNull: false },
-    property_id: { type: DataTypes.INTEGER, allowNull: false }
+    property_id: { type: DataTypes.INTEGER, allowNull: false },
+    is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
 PropertyType.hasMany(Property, { foreignKey: "property_type_id" })
@@ -90,8 +107,8 @@ OrderProduct.belongsTo(Order, { foreignKey: "order_id" })
 
 const ProductPhoto = db.define("product_photo", {
     product_photo_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    name: { type: DataTypes.STRING },
-    url: { type: DataTypes.STRING },
+    name: { type: DataTypes.STRING,allowNull:false },
+    file_id: { type: DataTypes.INTEGER, allowNull: true },
     product_id: { type: DataTypes.INTEGER, allowNull: false },
 })
 
@@ -145,7 +162,8 @@ ProductReview.belongsTo(User, { foreignKey: "user_id" })
 const Developer = db.define("developer", {
     developer_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
-    photo: { type: DataTypes.STRING },
+    file_id: { type: DataTypes.INTEGER, allowNull: true },
+    is_active: { type: DataTypes.BOOLEAN, defaultValue: false }
 })
 
 Developer.hasMany(Product, { foreignKey: "developer_id" })
@@ -161,9 +179,22 @@ const File = db.define("file", {
 File.hasMany(Category, { foreignKey: "file_id" })
 Category.belongsTo(File, { foreignKey: "file_id" })
 
+File.hasMany(Developer, { foreignKey: "file_id" })
+Developer.belongsTo(File, { foreignKey: "file_id" })
+
+File.hasMany(Product, { foreignKey: "file_id" })
+Product.belongsTo(File, { foreignKey: "file_id" })
+
+File.hasMany(ProductPhoto, { foreignKey: "file_id" })
+ProductPhoto.belongsTo(File, { foreignKey: "file_id" })
+
+
+
 const Enums = {
     "category": Category,
     "categories": Category,
+    "category_property": CategoryProperty,
+    "category_properties": CategoryProperty,
     "user": User,
     "users": User,
     "photo": File,
@@ -208,6 +239,7 @@ module.exports = {
     Order,
     OrderProduct,
     File,
+    CategoryProperty,
     Category,
     Product,
     Developer,

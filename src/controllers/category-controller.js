@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 const { Category, File } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 const loadFile = require("../utils/loadFile")
@@ -35,13 +36,19 @@ class CategoryController {
 
     async getCategories(req, res) {
 
-        const { category_id, extend,extendParent, page, limit } = req.query
+        const { category_id, extend, extendParent, page, limit, like } = req.query
 
         const query = req.query
 
         try {
-            const include = getFullInclude(extend)
+            const include = extend ? getFullInclude(extend) : null
             const where = query?.filter ?? {}
+
+            if (like?.length) {
+                where.name = {
+                    [Op.like]: `%${like}%`
+                }
+            }
 
             const categories = await Category.findAll({
                 where,
@@ -62,9 +69,10 @@ class CategoryController {
                     })
                 }
             }
+            const count = await Category.count()
 
             return res.json({
-                message: "Категории успешно получены", data: cats
+                message: "Категории успешно получены", data: cats, page, count
             })
 
         } catch (error) {
@@ -78,19 +86,13 @@ class CategoryController {
 
         const file = loadFile(req)
 
-        const { photo, ...data } = req.body
+        const { ...data } = req.body
 
 
         try {
 
-            const newPhoto = await File.create({
-                size: file.size,
-                link: "http://localhost:5000/" + photo
-            })
-
             const newCategory = await Category.create({
                 ...data,
-                photo_id: newPhoto.file_id
             })
 
             file?.load()
@@ -106,25 +108,15 @@ class CategoryController {
     async updateCategory(req, res) {
 
         const {
-            photo,
             ...data
         } = req.body
-
-        const file = loadFile(req)
 
         const { id } = req.params
 
         try {
 
-            const newPhoto = await File.create({
-                size: file.size,
-                link: "http://localhost:5000/" + req.body.photo
-
-            })
-
             const updatedCategory = await Category.update({
                 ...data,
-                photo_id:newPhoto.file_id
             }, {
                 where: {
                     category_id: id
@@ -132,8 +124,27 @@ class CategoryController {
                 returning: true
             })
 
-            file?.load()
             return res.json({ message: "Категория была успешно обновлена", data: updatedCategory[1][0].dataValues })
+        } catch (error) {
+            return res.status(400).json({ message: "Что то пошло не так" })
+        }
+
+    }
+
+    async deleteCategoryById(req, res) {
+
+        const { id } = req.params
+
+        try {
+
+            await Category.destroy({
+                where: {
+                    category_id: id
+                }
+            })
+
+            return res.json({ message: "Категория была успешно удалена" })
+
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
         }

@@ -4,8 +4,8 @@ const Router = require("express").Router
 
 const router = Router()
 
-router.get("/product-photo/:id", ProductPhotoController.getProductPhotosByProjectId)
-router.get("/product-photo", ProductPhotoController.getProductPhotos)
-router.post("/product-photo", ProductPhotoController.loadPhoto)
+router.get("/product-photos/:id", ProductPhotoController.getProductPhotosByProjectId)
+router.get("/product-photos", ProductPhotoController.getProductPhotos)
+router.post("/product-photos/:id", ProductPhotoController.loadPhoto)
 
 module.exports = router

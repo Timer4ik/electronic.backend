@@ -6,7 +6,7 @@ const getFullInclude = require("../utils/getFullInclude")
 class ProductPhotoController {
     async getProductPhotos(req, res) {
 
-        const { extend,...query } = req.query
+        const { extend, ...query } = req.query
 
         try {
             const include = getFullInclude(extend)
@@ -28,7 +28,7 @@ class ProductPhotoController {
     async getProductPhotosByProjectId(req, res) {
 
         const { id } = req.params
-        const { extend,...query } = req.query
+        const { extend, ...query } = req.query
 
         try {
             const include = getFullInclude(extend)
@@ -52,26 +52,26 @@ class ProductPhotoController {
 
     async loadPhoto(req, res) {
 
-        const file = loadFile(req, { multiple: true })
+        // const file = loadFile(req, { multiple: true })
 
-        const { photos, product_id } = req.body
+        const { id } = req.params
+        const { files } = req.body
 
         try {
             if (!product_id) {
                 throw new Error("Ошибка")
             }
 
-            let productPhotos = await ProductPhoto.bulkCreate(photos.map((photo) => ({
-                name: photo,
-                url: process.env.API_URL + photo,
-                product_id
+            let productPhotos = await ProductPhoto.bulkCreate(files.map((file) => ({
+                file_id:file,
+                product_id: id
             })))
 
-            file?.load()
+            // file?.load()
 
             return res.json({
                 message: "Фотографии были успешно добавлены",
-                data:productPhotos
+                data: productPhotos
             })
 
 

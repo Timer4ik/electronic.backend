@@ -1,12 +1,12 @@
 const loadFile = require("../utils/loadFile")
-const { ProductPhoto, Enums } = require("../models/models")
+const { File, Enums } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 
 
-class ProductPhotoController {
+class FileController {
     async getProductPhotos(req, res) {
 
-        const { extend,...query } = req.query
+        const { extend, ...query } = req.query
 
         try {
             const include = getFullInclude(extend)
@@ -28,7 +28,7 @@ class ProductPhotoController {
     async getProductPhotosByProjectId(req, res) {
 
         const { id } = req.params
-        const { extend,...query } = req.query
+        const { extend, ...query } = req.query
 
         try {
             const include = getFullInclude(extend)
@@ -52,30 +52,28 @@ class ProductPhotoController {
 
     async loadPhoto(req, res) {
 
-        const file = loadFile(req, { multiple: true })
+        const file = loadFile(req)
 
-        const { photos, product_id } = req.body
-
+        const data = req.body
+        file?.load()
         try {
-            if (!product_id) {
-                throw new Error("Ошибка")
-            }
 
-            let productPhotos = await ProductPhoto.bulkCreate(photos.map((photo) => ({
-                name: photo,
-                url: process.env.API_URL + photo,
-                product_id
-            })))
+            let files = await File.create({
+                name: data.file,
+                link: process.env.API_URL + data.file,
+                size: file.size
+            })
 
             file?.load()
 
             return res.json({
                 message: "Фотографии были успешно добавлены",
-                data:productPhotos
+                data: files
             })
 
 
         } catch (error) {
+            console.log(error);
             return res.status(400).json({ message: "Что то пошло не так" })
         }
 
@@ -83,4 +81,4 @@ class ProductPhotoController {
 
 }
 
-module.exports = new ProductPhotoController()
+module.exports = new FileController()

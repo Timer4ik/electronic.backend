@@ -14,7 +14,7 @@ class DeveloperController {
 
             const developers = await Developer.findOne({
                 where: {
-                    category_id:id
+                    developer_id: id
                 },
                 include
             })
@@ -92,6 +92,26 @@ class DeveloperController {
                 returning: true
             })
             return res.json({ message: "Производитель был успешно обновлен", data: updatedDeveloper[1][0].dataValues })
+        } catch (error) {
+            return res.status(400).json({ message: "Что то пошло не так" })
+        }
+
+    }
+
+    async deleteDeveloperById(req, res) {
+
+        const { id } = req.params
+
+        try {
+
+            await Developer.destroy({
+                where: {
+                    developer_id: id
+                }
+            })
+
+            return res.json({ message: "Производитель был успешно удалён" })
+
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
         }

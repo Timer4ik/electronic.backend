@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 const { Product, Category, Enums } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 const getOffset = require("../utils/getOffset")
@@ -11,24 +12,29 @@ class ProductController {
 
         const offset = getOffset(page, limit)
 
-        const { product_id, category_id, extend, ...query } = req.query
+        const { product_id, category_id, extend, like, ...query } = req.query
 
         const include = getFullInclude(extend)
         const where = query?.filter ?? {}
 
-        if (product_id) {
-            where.product_id = product_id
-        }
+        // if (product_id) {
+        //     where.product_id = product_id
+        // }
         // if (sub_category_id) {
         //     where.sub_category_id = sub_category_id
         // }
-        if (category_id) {
-            include.push({
-                model: Category,
-                where: {
-                    category_id
-                }
-            })
+        // if (category_id) {
+        //     include.push({
+        //         model: Category,
+        //         where: {
+        //             category_id
+        //         }
+        //     })
+        // }
+        if (like?.length) {
+            where.name = {
+                [Op.like]: `%${like}%`
+            }
         }
         try {
             const product = await Product.findAll({
@@ -46,11 +52,11 @@ class ProductController {
     }
     async getProductById(req, res) {
 
-        const { product_id, category_id, extend } = req.query
+        const { product_id, category_id, extend, ...query } = req.query
         const { id } = req.params
 
         const include = getFullInclude(extend)
-        const where = data?.filter ?? {}
+        const where = query?.filter ?? {}
 
         where.product_id = id
 
@@ -98,23 +104,29 @@ class ProductController {
             file?.load()
             return res.json({ message: "Новый продукт был успешно добавлен", data: newProduct })
         } catch (error) {
-            return res.status(400).json({ message: "Что то пошло не так",error })
+            return res.status(400).json({ message: "Что то пошло не так", error })
         }
     }
 
+    async deleteProduct(req, res) {
+
+        const { id } = req.params
+
+        try {
+
+           await Product.destroy({
+                where: {
+                    product_id: id
+                }
+            })
+            return res.json({ message: "Товар был успешно удалён", data: udpatedFilm[1][0].dataValues })
+        } catch (error) {
+            return res.status(400).json({ message: "Что то пошло не так" })
+        }
+    }
     async updateProduct(req, res) {
 
-        const file = loadFile(req)
-
         const {
-            name,
-            year,
-            descr,
-            status,
-            price,
-            rent_start_dt,
-            rent_end_dt,
-            session_times,
             ...data
         } = req.body
 
@@ -122,25 +134,13 @@ class ProductController {
 
         try {
 
-            const udpatedFilm = await Film.update({
-                name,
-                year,
-                descr,
-                status,
-                price,
-                image_url,
-                rent_start_dt,
-                rent_end_dt,
-                session_times,
-                image_url: data.photo
-            }, {
+            const udpatedFilm = await Product.update(data, {
                 where: {
-                    rent_film_id: id
+                    product_id: id
                 },
                 returning: true
             })
-            file?.load()
-            return res.json({ message: "Фильм был успешно обновлён", data: udpatedFilm[1][0].dataValues })
+            return res.json({ message: "Товар был успешно обновлён", data: udpatedFilm[1][0].dataValues })
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
         }
