@@ -41,6 +41,7 @@ const CategoryProperty = db.define("category_property", {
     property_id: { type: DataTypes.INTEGER, allowNull: false },
     category_id: { type: DataTypes.INTEGER, allowNull: false },
     name: { type: DataTypes.STRING, allowNull: false },
+    is_filter:{ type: DataTypes.BOOLEAN, defaultValue: false },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
@@ -115,7 +116,7 @@ const Slider = db.define("slider", {
     slider_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     title: { type: DataTypes.STRING },
     text: { type: DataTypes.STRING, },
-    photo_url: { type: DataTypes.STRING },
+    file_id:  { type: DataTypes.INTEGER, allowNull: true },
     product_id: { type: DataTypes.INTEGER, allowNull: true },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
     start_active_dt: { type: DataTypes.DATE, allowNull: true },
@@ -186,6 +187,9 @@ Product.belongsTo(File, { foreignKey: "file_id" })
 
 File.hasMany(ProductPhoto, { foreignKey: "file_id" })
 ProductPhoto.belongsTo(File, { foreignKey: "file_id" })
+
+File.hasMany(Slider, { foreignKey: "file_id" })
+Slider.belongsTo(File, { foreignKey: "file_id" })
 
 
 

@@ -56,7 +56,7 @@ class SliderController {
 
         const file = loadFile(req)
 
-        const {photo,...data} = req.body
+        const { photo, ...data } = req.body
 
         try {
             const newSlider = await Slider.create({
@@ -66,6 +66,24 @@ class SliderController {
 
             file?.load()
             return res.json({ message: "Новый слайдер был успешно добавлен", data: newSlider })
+        } catch (error) {
+            return res.status(400).json({ message: "Что то пошло не так" })
+        }
+    }
+
+    async deleteSlider(req, res) {
+
+        const { id } = req.params
+
+        try {
+
+            await Slider.destroy({
+                where: {
+                    slider_id: id
+                }
+            })
+
+            return res.json({ message: "Слайдер был успешно удалён" })
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
         }
