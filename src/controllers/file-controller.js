@@ -56,6 +56,24 @@ class FileController {
 
         const data = req.body
         file?.load()
+        let type = req?.files?.file?.name.split(".")[req?.files?.file?.name.split(".").length - 1]
+        if (req?.files?.file?.size / 1024 / 1024 > 5) {
+            return res.status(400).json({
+                message: "Фотография не загружена, слишком большой вес файла"
+            })
+        }
+        if (
+            type !== "jpg"
+            && type !== "png"
+            && type !== "jpeg"
+            && type !== "webp"
+        ) {
+            console.log(req?.files?.file?.name);
+            console.log(type);
+            return res.status(400).json({
+                message: "Фотография не загружена, неизвестный тип"
+            })
+        }
         try {
 
             let files = await File.create({

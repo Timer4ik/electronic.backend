@@ -56,11 +56,12 @@ class SliderController {
 
         const file = loadFile(req)
 
-        const { photo, ...data } = req.body
+        const { photo, product_id, ...data } = req.body
 
         try {
             const newSlider = await Slider.create({
                 ...data,
+                product_id:+product_id || null,
                 photo_url: photo
             })
 
@@ -108,7 +109,7 @@ class SliderController {
             const updatedSlider = await Slider.update({
                 title,
                 text,
-                product_id,
+                product_id:+product_id || null,
                 is_active,
                 photo_url: data.photo
             }, {

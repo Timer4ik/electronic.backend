@@ -44,10 +44,12 @@ class ProductController {
                 offset
             })
 
-            return res.json({ message: "Продукты успешно получены", data: products })
+            const count = await Product.count()
+
+            return res.json({ count, message: "Продукты успешно получены", data: products })
 
         } catch (error) {
-            return res.status(400).json({ message: "Что то пошло не так" ,error})
+            return res.status(400).json({ message: "Что то пошло не так", error })
         }
     }
     async getProductById(req, res) {
