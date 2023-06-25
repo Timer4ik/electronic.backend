@@ -6,7 +6,7 @@ const Category = db.define("category", {
     name: { type: DataTypes.STRING },
     file_id: { type: DataTypes.INTEGER, allowNull: true },
     parent_id: { type: DataTypes.INTEGER },
-    desc: { type: DataTypes.STRING, allowNull: true },
+    desc: { type: DataTypes.TEXT, allowNull: true },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
     is_end: { type: DataTypes.BOOLEAN, defaultValue: false }
 })
@@ -15,7 +15,7 @@ const Product = db.define("product", {
     product_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
-    descr: { type: DataTypes.STRING },
+    descr: { type: DataTypes.TEXT,allowNull:true },
     price: { type: DataTypes.FLOAT, defaultValue: 0 },
     file_id: { type: DataTypes.INTEGER, allowNull: true },
     category_id: { type: DataTypes.INTEGER, allowNull: false },
@@ -149,7 +149,7 @@ PromoProduct.belongsTo(Product, { foreignKey: "product_id" })
 const ProductReview = db.define("product_review", {
     user_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
     product_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true },
-    comment: { type: DataTypes.STRING },
+    comment: { type: DataTypes.TEXT },
     stars: { type: DataTypes.FLOAT, defaultValue: 0 }
 })
 

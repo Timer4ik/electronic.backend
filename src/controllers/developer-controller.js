@@ -1,5 +1,6 @@
 const { Developer } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
+const getOffset = require("../utils/getOffset")
 
 class DeveloperController {
 
@@ -30,9 +31,14 @@ class DeveloperController {
 
     async getDevelopers(req, res) {
 
+        const { page = 0, limit = 20 } = req.query
+
+        const offset = getOffset(page, limit)
+
         const { developer_id, extend } = req.query
 
         const query = req.query
+
 
         try {
             const include = getFullInclude(extend)
@@ -44,11 +50,15 @@ class DeveloperController {
 
             const developers = await Developer.findAll({
                 where,
-                include
+                include,
+                limit,
+                offset,
+                order: [['developer_id', 'DESC']],
             })
+            const count = await Developer.count()
 
             return res.json({
-                message: "Производители успешно получены", data: developers
+                message: "Производители успешно получены", data: developers, count
             })
 
         } catch (error) {

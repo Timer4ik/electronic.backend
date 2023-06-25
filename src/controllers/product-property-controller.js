@@ -36,7 +36,8 @@ class ProductPropertyValueController {
 
             const product_properties = await ProductPropertyValue.findAll({
                 where,
-                include
+                include,
+                order: [['product_property_id', 'DESC']],
             })
 
             return res.json({

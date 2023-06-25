@@ -41,7 +41,8 @@ class ProductController {
                 where,
                 include: include,
                 limit,
-                offset
+                offset,
+                order: [['product_id', 'DESC']],
             })
 
             const count = await Product.count()

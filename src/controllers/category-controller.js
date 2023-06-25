@@ -2,6 +2,7 @@ const { Op } = require("sequelize")
 const { Category, File } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 const loadFile = require("../utils/loadFile")
+const getOffset = require("../utils/getOffset")
 
 class CategoryController {
 
@@ -36,7 +37,11 @@ class CategoryController {
 
     async getCategories(req, res) {
 
-        const { category_id, extend, extendParent, page, limit, like } = req.query
+        const { page = 0, limit = 20 } = req.query
+
+        const offset = getOffset(page, limit)
+
+        const { category_id, extend, extendParent, like } = req.query
 
         const query = req.query
 
@@ -53,8 +58,8 @@ class CategoryController {
             const categories = await Category.findAll({
                 where,
                 limit,
-                offset: (limit * page) || 0,
-                order: [['category_id', 'ASC']],
+                offset,
+                order: [['category_id', 'DESC']],
                 include,
             })
 

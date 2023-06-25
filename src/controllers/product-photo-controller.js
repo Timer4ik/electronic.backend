@@ -14,7 +14,8 @@ class ProductPhotoController {
 
             const photos = await ProductPhoto.findAll({
                 where,
-                include
+                include,
+                order: [['product_photo_id', 'DESC']],
             })
 
             return res.json({

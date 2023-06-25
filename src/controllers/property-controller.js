@@ -1,5 +1,7 @@
+const { Op } = require("sequelize")
 const { Property } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
+const getOffset = require("../utils/getOffset")
 
 class PropertyController {
     async getPropertyById(req, res) {
@@ -28,19 +30,34 @@ class PropertyController {
 
     async getProperty(req, res) {
 
-        const { extend, ...query } = req.query
+        const { page = 0, limit = 20 } = req.query
+
+        const offset = getOffset(page, limit)
+
+        const { extend, like, ...query } = req.query
 
         try {
             const include = getFullInclude(extend)
             const where = query?.filter ?? {}
 
+            if (like?.length) {
+                where.name = {
+                    [Op.like]: `%${like}%`
+                }
+            }
+
             const property = await Property.findAll({
                 where,
-                include
+                include,
+                limit,
+                offset,
+                order: [['property_id', 'DESC']],
+
             })
+            const count = await Property.count()
 
             return res.json({
-                message: "Характеристики были успешно получены", data: property
+                message: "Характеристики были успешно получены", data: property,count
             })
 
         } catch (error) {
@@ -101,7 +118,7 @@ class PropertyController {
                     property_id: id
                 },
             })
-            
+
             return res.json({ message: "Характеристика была успешно удалена", data: deletedProperty })
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })

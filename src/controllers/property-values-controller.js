@@ -45,6 +45,7 @@ class PropertyValueController {
                 include,
                 limit,
                 offset: (limit * page) || 0,
+                order: [['property_value_id', 'DESC']],
             })
 
             const count = await PropertyValue.count()

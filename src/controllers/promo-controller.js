@@ -36,7 +36,8 @@ class PromoController {
 
             const promos = await Promo.findAll({
                 where,
-                include
+                include,
+                order: [['promo_id', 'DESC']],
             })
 
             return res.json({

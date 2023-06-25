@@ -19,7 +19,7 @@ class CategoryPropertyController {
                 where,
                 limit: limit || 100,
                 offset: (limit * page) || 0,
-                order: [['category_property_id', 'ASC']],
+                order: [['category_property_id', 'DESC']],
                 include,
             })
 

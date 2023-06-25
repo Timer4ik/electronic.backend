@@ -17,7 +17,8 @@ class SliderController {
                 where,
                 include,
                 limit,
-                offset
+                offset,
+                order: [['slider_id', 'DESC']],
             })
 
             return res.json({
@@ -111,7 +112,8 @@ class SliderController {
                 text,
                 product_id:+product_id || null,
                 is_active,
-                photo_url: data.photo
+                photo_url: data.photo,
+                ...data
             }, {
                 where: {
                     slider_id: id
