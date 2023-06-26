@@ -15,7 +15,7 @@ const Product = db.define("product", {
     product_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
-    descr: { type: DataTypes.TEXT,allowNull:true },
+    descr: { type: DataTypes.TEXT, allowNull: true },
     price: { type: DataTypes.FLOAT, defaultValue: 0 },
     file_id: { type: DataTypes.INTEGER, allowNull: true },
     category_id: { type: DataTypes.INTEGER, allowNull: false },
@@ -26,7 +26,7 @@ const Product = db.define("product", {
 const PropertyValue = db.define("property_value", {
     property_value_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
-    property_id:{ type: DataTypes.INTEGER, allowNull: false },
+    property_id: { type: DataTypes.INTEGER, allowNull: false },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
@@ -41,7 +41,7 @@ const CategoryProperty = db.define("category_property", {
     property_id: { type: DataTypes.INTEGER, allowNull: false },
     category_id: { type: DataTypes.INTEGER, allowNull: false },
     name: { type: DataTypes.STRING, allowNull: false },
-    is_filter:{ type: DataTypes.BOOLEAN, defaultValue: false },
+    is_filter: { type: DataTypes.BOOLEAN, defaultValue: false },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
@@ -56,7 +56,7 @@ const ProductPropertyValue = db.define("product_property_value", {
     product_property_value_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     product_id: { type: DataTypes.INTEGER, allowNull: false },
     property_value_id: { type: DataTypes.INTEGER, allowNull: true },
-    category_property_id:{ type: DataTypes.INTEGER, allowNull: true },
+    category_property_id: { type: DataTypes.INTEGER, allowNull: true },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
@@ -107,7 +107,7 @@ OrderProduct.belongsTo(Order, { foreignKey: "order_id" })
 
 const ProductPhoto = db.define("product_photo", {
     product_photo_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    name: { type: DataTypes.STRING,allowNull:false },
+    name: { type: DataTypes.STRING, allowNull: false },
     file_id: { type: DataTypes.INTEGER, allowNull: true },
     product_id: { type: DataTypes.INTEGER, allowNull: false },
 })
@@ -116,7 +116,7 @@ const Slider = db.define("slider", {
     slider_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     title: { type: DataTypes.STRING },
     text: { type: DataTypes.STRING, },
-    file_id:  { type: DataTypes.INTEGER, allowNull: true },
+    file_id: { type: DataTypes.INTEGER, allowNull: true },
     product_id: { type: DataTypes.INTEGER, allowNull: true },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
     start_active_dt: { type: DataTypes.DATE, allowNull: true },
@@ -191,6 +191,28 @@ ProductPhoto.belongsTo(File, { foreignKey: "file_id" })
 File.hasMany(Slider, { foreignKey: "file_id" })
 Slider.belongsTo(File, { foreignKey: "file_id" })
 
+const ShopProduct = db.define("shop_product", {
+    shop_product: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
+    product_id: { type: DataTypes.INTEGER, allowNull: false },
+    shop_id: { type: DataTypes.INTEGER, allowNull: false },
+    is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
+    is_sold: { type: DataTypes.BOOLEAN, defaultValue: false },
+})
+
+const Shop = db.define("shop", {
+    shop_id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
+    file_id: { type: DataTypes.INTEGER, allowNull: true },
+    address: { type: DataTypes.STRING, allowNull: false },
+    cords: { type: DataTypes.STRING, allowNull: false },
+    openFrom: { type: DataTypes.STRING, allowNull: false },
+    openTo: { type: DataTypes.STRING, allowNull: false },
+})
+
+Shop.hasMany(ShopProduct, { foreignKey: "shop_id" })
+ShopProduct.belongsTo(Shop, { foreignKey: "shop_id" })
+
+Product.hasMany(ShopProduct, { foreignKey: "product_id" })
+ShopProduct.belongsTo(Product, { foreignKey: "product_id" })
 
 
 const Enums = {
@@ -232,8 +254,11 @@ const Enums = {
     "product_reviews": ProductReview,
 
     "developers": Developer,
-    "developer": Developer
-
+    "developer": Developer,
+    "shop": Shop,
+    "shops": Shop,
+    "shop_product": ShopProduct,
+    "shop_products": ShopProduct,
 }
 
 module.exports = {
@@ -254,6 +279,8 @@ module.exports = {
     Property,
     ProductPropertyValue,
     ProductReview,
+    Shop,
+    ShopProduct
 }
 
 
