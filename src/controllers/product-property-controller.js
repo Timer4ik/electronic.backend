@@ -33,11 +33,11 @@ class ProductPropertyValueController {
         try {
             const include = getFullInclude(extend)
             const where = query?.filter ?? {}
-
+            console.log("debug");
             const product_properties = await ProductPropertyValue.findAll({
                 where,
                 include,
-                order: [['product_property_id', 'DESC']],
+                order: [['product_property_value_id', 'DESC']],
             })
 
             return res.json({
@@ -53,8 +53,29 @@ class ProductPropertyValueController {
     async createProductPropertyValue(req, res) {
 
         const data = req.body
+        const {
+            product_id,
+            property_id,
+            property_value_id
+        } = req.body
 
         try {
+            const propertyAlreadyExist = await ProductPropertyValue.findOne({
+                where: {
+                    product_id,
+                    property_id,
+                }
+            })
+
+            if (propertyAlreadyExist) {
+                await ProductPropertyValue.update({ property_value_id }, {
+                    where: {
+                        product_id,
+                        property_id,
+                    }
+                })
+                return res.json({ message: "Характеристика продукта была успешно добавлена", data: newProperty })
+            }
 
             const newProperty = await ProductPropertyValue.create({
                 ...data
@@ -102,7 +123,7 @@ class ProductPropertyValueController {
                     product_property_value_id: id
                 },
             })
-            
+
             return res.json({ message: "Характеристика продукта была успешно удалена", data: deletedProperty })
         } catch (error) {
             return res.status(400).json({ message: "Что то пошло не так" })
