@@ -58,6 +58,15 @@ class ProductPhotoController {
         const data = req.body
 
         try {
+            const photos = await ProductPhoto.findAll({
+                where: {
+                    product_id: data.product_id
+                },
+            })
+
+            if (photos.length >= 5) {
+                return res.status(400).json({ message: "Максимальное количество фотографий" })
+            }
 
             let productPhotos = await ProductPhoto.create(data)
 

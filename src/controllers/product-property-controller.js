@@ -55,7 +55,7 @@ class ProductPropertyValueController {
         const data = req.body
         const {
             product_id,
-            property_id,
+            category_property_id,
             property_value_id
         } = req.body
 
@@ -63,7 +63,7 @@ class ProductPropertyValueController {
             const propertyAlreadyExist = await ProductPropertyValue.findOne({
                 where: {
                     product_id,
-                    property_id,
+                    category_property_id,
                 }
             })
 
@@ -71,10 +71,10 @@ class ProductPropertyValueController {
                 await ProductPropertyValue.update({ property_value_id }, {
                     where: {
                         product_id,
-                        property_id,
+                        category_property_id,
                     }
                 })
-                return res.json({ message: "Характеристика продукта была успешно добавлена", data: newProperty })
+                return res.json({ message: "Характеристика продукта была успешно добавлена", data: propertyAlreadyExist })
             }
 
             const newProperty = await ProductPropertyValue.create({

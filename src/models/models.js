@@ -56,15 +56,15 @@ const ProductPropertyValue = db.define("product_property_value", {
     product_property_value_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     product_id: { type: DataTypes.INTEGER, allowNull: false },
     property_value_id: { type: DataTypes.INTEGER, allowNull: true },
-    property_id:{ type: DataTypes.INTEGER, allowNull: true },
+    category_property_id:{ type: DataTypes.INTEGER, allowNull: true },
     is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
 Property.hasMany(PropertyValue, { foreignKey: "property_id" })
 PropertyValue.belongsTo(PropertyValue, { foreignKey: "property_id" })
 
-Property.hasMany(ProductPropertyValue, { foreignKey: "property_id" })
-ProductPropertyValue.belongsTo(Property, { foreignKey: "property_id" })
+CategoryProperty.hasMany(ProductPropertyValue, { foreignKey: "category_property_id" })
+ProductPropertyValue.belongsTo(CategoryProperty, { foreignKey: "category_property_id" })
 
 PropertyValue.hasMany(ProductPropertyValue, { foreignKey: "property_value_id" })
 ProductPropertyValue.belongsTo(PropertyValue, { foreignKey: "property_value_id" })

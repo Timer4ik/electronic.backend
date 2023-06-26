@@ -2,6 +2,7 @@ require("dotenv").config()
 const express = require("express")
 const cors = require("cors")
 const db = require("./db.js")
+const bcrypt = require("bcrypt")
 const path = require("path")
 const fileUpload = require("express-fileupload")
 const uuid = require("uuid")
@@ -101,12 +102,21 @@ const start = async () => {
     //     url: "http://sewr.api/png"
     // })
 
-    // User.create({
-    //     email:"admin",
-    //     name:"admin",
-    //     password:"admin",
-    //     role:"admin",
-    // })
+    const user = await User.findOne({
+        where: {
+            email: "admin123@yandex.ru",
+        }
+    })
+
+    if (!user) {
+        const hashedPassword = await bcrypt.hash("admin123@yandex.ru", 4)
+        await User.create({
+            email: "admin123@yandex.ru",
+            name: "admin123@yandex.ru",
+            password: hashedPassword,
+            role: "admin",
+        })
+    }
 
 
     await app.listen(PORT, () => {

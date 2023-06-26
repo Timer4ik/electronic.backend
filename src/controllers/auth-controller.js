@@ -54,7 +54,7 @@ class AuthController {
 
         const { email, password } = req.body
         const data = req.body
-        console.log(data);
+
         try {
 
             const user = await User.findOne({
