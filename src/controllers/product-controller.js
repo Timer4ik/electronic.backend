@@ -1,5 +1,5 @@
 const { Op } = require("sequelize")
-const { Product, Category, Enums, Property, ProductPropertyValue, CategoryProperty } = require("../models/models")
+const { Product, Category, Enums, Property, ProductPropertyValue, CategoryProperty, File, PropertyValue } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 const getOffset = require("../utils/getOffset")
 const loadFile = require("../utils/loadFile")
@@ -12,9 +12,19 @@ class ProductController {
 
         const offset = getOffset(page, limit)
 
-        const { product_id, category_id, extend, like, ...query } = req.query
+        const { product_id, category_id, extend, like, property_value_id, ...query } = req.query
 
-        const include = getFullInclude(extend)
+        let include = getFullInclude(extend)
+
+        if (property_value_id) {
+            include.push({
+                model: ProductPropertyValue,
+                where: {
+                    property_value_id
+                }
+            })
+        }
+
         const where = query?.filter ?? {}
 
         // if (product_id) {
@@ -36,6 +46,7 @@ class ProductController {
                 [Op.like]: `%${like}%`
             }
         }
+
         try {
             const products = await Product.findAll({
                 where,

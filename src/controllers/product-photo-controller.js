@@ -51,6 +51,32 @@ class ProductPhotoController {
         }
     }
 
+    async updatePhoto(req, res) {
+        const { id } = req.params
+        const data = req.body
+
+        try {
+
+            let productPhotos = await ProductPhoto.update({
+                name: data.name
+            }, {
+                where: {
+                    product_photo_id: id
+                }
+            })
+
+
+            return res.json({
+                message: "Фотографии были успешно добавлены",
+                data: productPhotos
+            })
+
+
+        } catch (error) {
+            return res.status(400).json({ message: "Что то пошло не так" })
+        }
+    }
+
     async loadPhoto(req, res) {
 
         // const file = loadFile(req, { multiple: true })

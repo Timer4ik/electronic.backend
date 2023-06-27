@@ -33,7 +33,8 @@ class ProductPropertyValueController {
         try {
             const include = getFullInclude(extend)
             const where = query?.filter ?? {}
-            console.log("debug");
+            
+
             const product_properties = await ProductPropertyValue.findAll({
                 where,
                 include,
