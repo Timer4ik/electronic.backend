@@ -1,37 +1,106 @@
-const { Op } = require("sequelize")
+const { Op, Sequelize } = require("sequelize")
 const { Category, File } = require("../models/models")
 const getFullInclude = require("../utils/getFullInclude")
 const loadFile = require("../utils/loadFile")
 const getOffset = require("../utils/getOffset")
 
+const parentsInclude = {
+    model: Category,
+    as: 'categories',
+    // include: [{
+    //     model: Category,
+    //     as: 'childs',
+    //     include: [{
+    //         model: Category,
+    //         as: 'parent',
+    //         include: [{
+    //             model: Category,
+    //             as: 'parent',
+    //             include: [{
+    //                 model: Category,
+    //                 as: 'parent',
+    //             }],
+    //         }],
+    //     }],
+    // }],
+}
+const parentInclude = {
+    model: Category,
+    as: 'parent',
+    include: [{
+        model: Category,
+        as: 'parent',
+        include: [{
+            model: Category,
+            as: 'parent',
+            include: [{
+                model: Category,
+                as: 'parent',
+                include: [{
+                    model: Category,
+                    as: 'parent',
+                    include: [{
+                        model: Category,
+                        as: 'parent',
+                        include: [{
+                            model: Category,
+                            as: 'parent',
+
+                        }],
+                    }],
+                }],
+            }],
+        }],
+    }],
+}
 class CategoryController {
 
     async getCategoryById(req, res) {
 
         const { id } = req.params
-        const { extend } = req.query
+        let { extend } = req.query
+
+        let hasParent = false
+        let hasParents = false
+        if (extend) {
+            let _extends = extend.split(",")
+            if (_extends.find(item => item == "parent")) {
+                hasParent = true
+                extend = _extends?.filter(ex => ex !== "parent")?.join(",")
+            }
+            if (_extends.find(item => item == "categories")) {
+                hasParents = true
+                extend = _extends?.filter(ex => ex !== "categories")?.join(",")
+            }
+        }
 
         try {
             const include = getFullInclude(extend)
+            if (hasParent) {
+                include.push(parentInclude)
+            }
+            if (hasParents) {
+                include.push(parentsInclude)
+            }
 
             const { dataValues: category } = await Category.findOne({
                 where: {
                     category_id: id
                 },
-                include,
+                include: [...include],
 
             })
-            category.parent = await Category.findOne({
-                where: {
-                    category_id: category.parent_id
-                },
-            })
+            // category.parent = await Category.findOne({
+            //     where: {
+            //         category_id: category.parent_id
+            //     },
+            // })
             return res.json({
                 message: "Категория была успешно получена", data: category
             })
 
         } catch (error) {
-            return res.status(400).json({ message: "Что то пошло не так" })
+            return res.status(400).json({ message: "Что то пошло не так", error })
         }
     }
 
@@ -41,13 +110,35 @@ class CategoryController {
 
         const offset = getOffset(page, limit)
 
-        const { category_id, extend, extendParent, like } = req.query
+        let { category_id, extend, extendParent, like } = req.query
 
         const query = req.query
+
+        let hasParent = false
+        let hasParents = false
+        
+        if (extend) {
+            let _extends = extend.split(",")
+            if (_extends.find(item => item == "parent")) {
+                hasParent = true
+                extend = _extends?.filter(ex => ex !== "parent")?.join(",")
+            }
+            if (_extends.find(item => item == "categories")) {
+                hasParents = true
+                extend = _extends?.filter(ex => ex !== "categories")?.join(",")
+            }
+        }
 
         try {
             const include = extend ? getFullInclude(extend) : null
             const where = query?.filter ?? {}
+
+            if (hasParent) {
+                include.push(parentInclude)
+            }
+            if (hasParents) {
+                include.push(parentsInclude)
+            }
 
             if (like?.length) {
                 where.name = {
@@ -61,6 +152,7 @@ class CategoryController {
                 offset,
                 order: [['category_id', 'DESC']],
                 include,
+                // attributes: [[Sequelize.fn('max', Sequelize.col('price')), 'maxPrice']],
             })
 
             let cats = [...categories.map(item => item.dataValues)]

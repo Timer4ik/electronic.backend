@@ -11,6 +11,16 @@ const Category = db.define("category", {
     is_end: { type: DataTypes.BOOLEAN, defaultValue: false }
 })
 
+Category.hasMany(Category, {
+    foreignKey: "parent_id",
+    as:"categories"
+});
+Category.belongsTo(Category, {
+    foreignKey: "parent_id",
+    as: 'parent'
+});
+
+
 const Product = db.define("product", {
     product_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING },
@@ -185,6 +195,7 @@ Developer.belongsTo(File, { foreignKey: "file_id" })
 File.hasMany(Product, { foreignKey: "file_id" })
 Product.belongsTo(File, { foreignKey: "file_id" })
 
+
 File.hasMany(ProductPhoto, { foreignKey: "file_id" })
 ProductPhoto.belongsTo(File, { foreignKey: "file_id" })
 
@@ -215,6 +226,8 @@ Product.hasMany(ShopProduct, { foreignKey: "product_id" })
 ShopProduct.belongsTo(Product, { foreignKey: "product_id" })
 
 
+File.hasMany(Shop, { foreignKey: "file_id" })
+Shop.belongsTo(File, { foreignKey: "file_id" })
 const Enums = {
     "category": Category,
     "categories": Category,
