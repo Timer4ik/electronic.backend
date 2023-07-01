@@ -36,7 +36,7 @@ class PropertyValueController {
 
             if (like?.length) {
                 where.name = {
-                    [Op.like]: `%${like}%`
+                    [Op.iLike]: `%${like}%`
                 }
             }
 

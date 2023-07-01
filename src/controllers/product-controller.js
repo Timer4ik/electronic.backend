@@ -43,7 +43,7 @@ class ProductController {
         // }
         if (like?.length) {
             where.name = {
-                [Op.like]: `%${like}%`
+                [Op.iLike]: `%${like}%`
             }
         }
 
@@ -56,7 +56,9 @@ class ProductController {
                 order: [['product_id', 'DESC']],
             })
 
-            const count = await Product.count()
+            const count = await Product.count({
+                where
+            })
 
             return res.json({ count, message: "Продукты успешно получены", data: products })
 
