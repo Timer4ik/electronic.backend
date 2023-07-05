@@ -14,6 +14,12 @@ const categoryPropertyRouter = require("./category-property-router.js")
 const shopRouter = require("./shop-router.js")
 const shopProductRouter = require("./shop-product-router.js")
 const fileRouter = require("./file-router.js")
+const getMethodRouter = require("./get-method-router.js")
+const paymentMethodRouter = require("./payment-method-router.js")
+const orderRouter = require("./order-router.js")
+const orderProductRouter = require("./order-product-router.js")
+const reviewRouter = require("./review-router.js")
+
 const router = Router()
 
 router.use("/auth", authRouter)
@@ -30,5 +36,10 @@ router.use(promoRouter)
 router.use(propertyTypeRouter)
 router.use(propertyRouter)
 router.use(fileRouter)
+router.use(getMethodRouter)
+router.use(paymentMethodRouter)
+router.use(orderRouter)
+router.use(orderProductRouter)
+router.use(reviewRouter)
 
 module.exports = router

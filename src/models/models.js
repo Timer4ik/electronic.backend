@@ -13,7 +13,7 @@ const Category = db.define("category", {
 
 Category.hasMany(Category, {
     foreignKey: "parent_id",
-    as:"categories"
+    as: "categories"
 });
 Category.belongsTo(Category, {
     foreignKey: "parent_id",
@@ -95,10 +95,26 @@ const User = db.define("user", {
     timestamps: true
 })
 
+const PaymentMethod = db.define("payment_method", {
+    payment_method_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING, allowNull: false },
+})
+
+const GetMethod = db.define("get_method", {
+    get_method_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    name: { type: DataTypes.STRING, allowNull: false },
+})
+
+
 const Order = db.define("order", {
     order_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     user_id: { type: DataTypes.INTEGER },
     status_id: { type: DataTypes.INTEGER, defaultValue: 0 },
+    phone: { type: DataTypes.STRING, allowNull: false },
+    address: { type: DataTypes.STRING, allowNull: true },
+    payment_method_id: { type: DataTypes.INTEGER, allowNull: false },
+    get_method_id: { type: DataTypes.INTEGER, allowNull: false },
+    email: { type: DataTypes.STRING, allowNull: true }
 }, {
     timestamps: true
 })
@@ -106,10 +122,22 @@ const OrderProduct = db.define("order_product", {
     order_product_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     order_id: { type: DataTypes.INTEGER, allowNull: false },
     product_id: { type: DataTypes.INTEGER, allowNull: false },
+    // reviewText:{type:DataTypes.TEXT,allowNull:true},
+    // stars:{type:DataTypes.NUMBER,allowNull:true},
+    amount: { type: DataTypes.INTEGER, defaultValue: 1 }
 })
+
+PaymentMethod.hasMany(Order, { foreignKey: "payment_method_id" })
+Order.belongsTo(PaymentMethod, { foreignKey: "payment_method_id" })
+
+GetMethod.hasMany(Order, { foreignKey: "get_method_id" })
+Order.belongsTo(GetMethod, { foreignKey: "get_method_id" })
 
 User.hasMany(Order, { foreignKey: "user_id" })
 Order.belongsTo(User, { foreignKey: "user_id" })
+
+Product.hasMany(OrderProduct, { foreignKey: "product_id" })
+OrderProduct.belongsTo(Product, { foreignKey: "product_id" })
 
 Order.hasMany(OrderProduct, { foreignKey: "order_id" })
 OrderProduct.belongsTo(Order, { foreignKey: "order_id" })
@@ -217,6 +245,7 @@ const Shop = db.define("shop", {
     cords: { type: DataTypes.STRING, allowNull: false },
     openFrom: { type: DataTypes.STRING, allowNull: false },
     openTo: { type: DataTypes.STRING, allowNull: false },
+    // is_active: { type: DataTypes.BOOLEAN, defaultValue: false },
 })
 
 Shop.hasMany(ShopProduct, { foreignKey: "shop_id" })
@@ -240,6 +269,10 @@ const Enums = {
     "file": File,
     "files": File,
     "order": Order,
+    "payment_method": PaymentMethod,
+    "payment_methods": PaymentMethod,
+    "get_method": GetMethod,
+    "get_methods": GetMethod,
     "orders": Order,
     "order_product": OrderProduct,
     "order_products": OrderProduct,
@@ -293,7 +326,9 @@ module.exports = {
     ProductPropertyValue,
     ProductReview,
     Shop,
-    ShopProduct
+    ShopProduct,
+    PaymentMethod,
+    GetMethod
 }
 
 

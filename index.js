@@ -7,7 +7,7 @@ const path = require("path")
 const fileUpload = require("express-fileupload")
 const uuid = require("uuid")
 
-const { Category, Product, ProductPhoto, User, Developer } = require("./src/models/models.js")
+const { Category, Product, ProductPhoto, User, Developer, GetMethod, PaymentMethod } = require("./src/models/models.js")
 
 const router = require("./src/routes/index")
 const app = express()
@@ -100,6 +100,20 @@ const start = async () => {
     //     name: "phoot3",
     //     product_id: 2,
     //     url: "http://sewr.api/png"
+    // })
+
+    // PaymentMethod.create({
+    //     name:"Наличными"
+    // })
+    // PaymentMethod.create({
+    //     name:"Банковской картой"
+    // })
+
+    // GetMethod.create({
+    //     name:"Самовывоз"
+    // })
+    // GetMethod.create({
+    //     name:"Доставка"
     // })
 
     const user = await User.findOne({
